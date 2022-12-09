@@ -4,10 +4,8 @@ library(caret)
 library(shiny)
 library(DT)
 
-# This project will use data from Project 1 on public school enrollment in the United States from the 1970's to the early 2000's. 
-# Acquired from the U.S. Census Bureau, the data includes enrollment data on national, state, and county level.
-# The data set read in below is one section of public school enrollment data
-sheet1 <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv")
+
+math <- read_csv("student-mat.csv")
 
 # Define UI for application
 shinyUI(navbarPage("ST558 Final Project",
@@ -58,7 +56,11 @@ shinyUI(navbarPage("ST558 Final Project",
                       tags$li(strong("G3"), "final grade (from 0 to 20, output target)"),
                     ),
                     p("More information on this dataset can be found on the ", a(href = "https://www.kaggle.com/datasets/uciml/student-alcohol-consumption?resource=download", target="_blank", "Kaggle"),"website.")
-                    )
+             ),
+             column(12,
+                    h4("About the App"),
+                    p("The goal of this project is to create a nice looking shiny app that can be used to explore data and model it")
+             )
            )
   ),
   
