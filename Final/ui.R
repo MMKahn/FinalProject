@@ -66,17 +66,17 @@ shinyUI(navbarPage("ST558 Final Project",
   
   # Create second tab: Data Exploration page
   tabPanel("Data Exploration",
+           # Title of page
+           titlePanel("Exploratory Data Analysis (EDA)"),
            
            # Create Sidebar
            sidebarLayout(
              # Customize Sidebar
              sidebarPanel(
-               # Third level header
-               h3("This data set comes from the", a(href = "https://topepo.github.io/caret/", target="_blank", "caret package"),"- originally from the UCI machine learning repository"),
-               
+               # Fourth level header
+               h4("Create your custom graphical summaries below:"),
                # Line break
                br(),
-               
                # Fourth level header
                h4("You can create a few bar plots using the radio buttons below."),
                
@@ -149,7 +149,7 @@ shinyUI(navbarPage("ST558 Final Project",
            )
   ),
   
-  # Create forth tab: Data page
+  # Create fourth tab: Data page
   tabPanel("Data",
            
            # Create Sidebar
