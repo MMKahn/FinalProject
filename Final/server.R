@@ -5,33 +5,38 @@ library(shiny)
 library(DT)
 library(ggplot2)
 
-math <- read_csv("student-mat.csv")
+math <- read_csv("./Final/student-mat.csv")
+
+numericVars <- math %>% 
+  select_if(is.numeric)
+
+charVars <- math %>%
+  select_if(is.character)
 
 #Set up server
-shinyServer(function(input, output){
+shinyServer(function(input, output, session){
   
-  # Create bar plot to visualize the relationship between good and bad classes
+  # Create bar plot to visualize data
   output$dataPlot<-renderPlot({
     plotType <- input$plotType
-    # When "Just Classification" is chosen on the radio button widget in sidebar, produce this bar plot
-    if(plotType == "Just Classification"){
-      g <- ggplot(data = GermanCredit, aes(x = Class))
-      g + geom_bar()
+    if(plotType == "Bar Graph"){
+      g <- ggplot(data = math, aes(x = get(input$barXvar)))
+      g + geom_bar() +
+        labs(title = "Bar Graph")
     } 
-    # When "Classification and Unemployed" is chosen on the radio button widget in sidebar, produce this side-by-side bar plot
-    else if(plotType == "Classification and Unemployed"){
-      employCred <- GermanCredit %>% 
-        mutate(unemployment = if_else(EmploymentDuration.lt.1 == 1 | EmploymentDuration.1.to.4 == 1 | EmploymentDuration.4.to.7 == 1 | EmploymentDuration.gt.7 == 1, "Employed", "Unemployed"))
-      g2 <- ggplot(data = employCred, aes(x = Class, fill = unemployment))
-      g2 + geom_bar(stat = "count", position = "dodge") +
-        scale_fill_discrete(name = "Umemployment status")
-    } # When "Classification and Foreign" is chosen on the radio button widget in sidebar, produce this side-by-side bar plot
+
+    else if(plotType == "Boxplot"){
+      g2 <- ggplot(data = math, aes(x = get(input$boxXvar), y = get(input$boxYvar)))
+      g2 + geom_boxplot() +
+        geom_jitter(aes(color = get(input$boxXvar))) +
+        labs(title = "Boxplot")
+    } 
+    
     else{
-      nationCred <- GermanCredit %>% 
-        mutate(foreignStatus = if_else(ForeignWorker == 0, "No", "Yes"))
-      g3 <- ggplot(data = nationCred, aes(x = Class, fill = foreignStatus))
-      g3 + geom_bar(stat = "count", position = "dodge") +
-        scale_fill_discrete(name = "Status", labels = c("German", "Foreign"))
+      g3 <- ggplot(data = math, aes(x = get(input$scatterXvar), y = get(input$scatterYvar)))
+      g3 + geom_point() +
+        geom_smooth(method = lm, col = "Blue") +
+        labs(title = "Scatter Plot")
     }
   })
   
