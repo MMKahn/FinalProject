@@ -70,19 +70,19 @@ shinyUI(navbarPage("ST558 Final Project",
            # Title of page
            titlePanel("Exploratory Data Analysis (EDA)"),
            
-           # Create Sidebar
+           # Create Sidebar with options for the data set
            sidebarLayout(
              # Customize Sidebar
              sidebarPanel(
                # Fourth level header
-               h4("Create your custom graphical summaries below:"),
-               # Line break
-               br(),
-               # Fourth level header
-               h4("You can create a few bar plots using the radio buttons below."),
-               
+               h4("Select options to create numerical summaries:"),
                # Radio button widget in sidebar
-               radioButtons("plotType", label="Select the Plot Type", choices = c("Just Classification", "Classification and Unemployed", "Classification and Foreign"), selected = "Just Classification"),
+               radioButtons("numericType", label="Select the Summary Type", choices = c("Mean", "Standard Deviation", "Contingency Tables"), selected = "Mean"),
+               # Select options based on radio button selection
+               conditionalPanel(condition = "input.numericType",
+                                checkboxInput("rem", "Also change symbol based on REM sleep?")
+               ),
+               
                
                # Line break
                br(),
