@@ -4,9 +4,6 @@ library(caret)
 library(shiny)
 library(DT)
 
-
-math <- read_csv("student-mat.csv")
-
 # Define UI for application
 shinyUI(navbarPage("ST558 Final Project",
   
@@ -79,36 +76,60 @@ shinyUI(navbarPage("ST558 Final Project",
                # Radio button widget in sidebar
                radioButtons("numericType", label="Select the Summary Type", choices = c("Mean", "Standard Deviation", "Contingency Tables"), selected = "Mean"),
                # Select options based on radio button selection
-               conditionalPanel(condition = "input.numericType",
-                                checkboxInput("rem", "Also change symbol based on REM sleep?")
+               conditionalPanel(condition = "input.numericType == 'Mean'",
+                                selectInput("avg", "Mean of:", selected = "Age", choices = c("Age", "Absences", "First Period Grade", "Second Period Grade", "Final Grade"))
                ),
-               
+               conditionalPanel(condition = "input.numericType == 'Standard Deviation'",
+                                selectInput("stdev", "Standard deviation of:", selected = "Age", choices = c("Age", "Absences", "First Period Grade", "Second Period Grade", "Final Grade"))
+               ),
+               conditionalPanel(condition = "input.numericType == 'Contingency Tables'",
+                                selectInput("cntgTbl", "Type of Contingency Table:", selected = "One-Way", choices = c("One-Way", "Two-Way"))
+               ),
+               conditionalPanel(condition = "input.cntgTbl == 'One-Way'",
+                                selectInput("oneWay", "Variable:", selected = "Age", choices = c("Age", "Absences", "First Period Grade", "Second Period Grade", "Final Grade"))
+               ),
+               conditionalPanel(condition = "input.cntgTbl == 'Two-Way'",
+                                selectInput("twoWayXvar", "First Variable:", selected = "Age", choices = c("Age", "Absences", "First Period Grade", "Second Period Grade", "Final Grade")),
+                                selectInput("twoWayYvar", "Second Variable:", selected = "Absences", choices = c("Age", "Absences", "First Period Grade", "Second Period Grade", "Final Grade"))
+               ),
                
                # Line break
                br(),
                
                # Fourth level header
-               h4("You can find the", strong("sample mean"), "for a few variables below:"), # Third level header
-               
-               # Select box widget in sidebar
-               selectInput("var", label="Select the Plot Type", choices = c("Duration", "Amount", "Age"), selected = "Age"),
-               
-               # Numeric input widget in sidebar
-               numericInput("round", label="Select the number of digits for rounding", value = 2, min = 0, max = 5, step = 1),
+               h4("Select options to create graphical summaries:"),
+               # Radio button widget in sidebar
+               radioButtons("plotType", label="Select the Plot Type", choices = c("Bar Graph", "Histogram", "Boxplot", "Scatter Plot"), selected = "Bar Graph"),
+               # Select options based on radio button selection
+               conditionalPanel(condition = "input.plotType == 'Bar Graph'",
+                                selectInput("barXvar", "Variable on X-axis:", selected = "School", choices = c("School", "Sex"))
+               ),
+               conditionalPanel(condition = "input.plotType == 'Histogram'",
+                                selectInput("histXvar", "Variable on X-axis:", selected = "Age", choices = c("Age", "Free Time"))
+               ),
+               conditionalPanel(condition = "input.plotType == 'Boxplot'",
+                                selectInput("boxXvar", "Variable on X-axis:", selected = "School", choices = c("School", "Sex")),
+                                selectInput("boxYvar", "Variable on Y-axis:", selected = "Age", choices = c("Age", "Free Time"))
+               ),
+               conditionalPanel(condition = "input.plotType == 'Scatter Plot'",
+                                selectInput("scatterXvar", "Variable on X-axis:", selected = "Age", choices = c("Age", "Free Time")),
+                                selectInput("scatterYvar", "Variable on Y-axis:", selected = "Age", choices = c("Age", "Free Time"))
+               ),
              ),
              
              # Customize Main panel
              mainPanel(
-               #dataPlot is name of "plot" object in server
-               plotOutput("dataPlot"),
-               
                #dataTable is name of "data" object in server
-               dataTableOutput("dataTable")
+               dataTableOutput("dataTable"),
+               #dataPlot is name of "plot" object in server
+               plotOutput("dataPlot")
              )
            )
   ),
   # Create third tab: Modeling page
   tabPanel("Modeling",
+           # Title of page
+           titlePanel("Modeling"),
            
            # Create Sidebar
            sidebarLayout(
@@ -152,6 +173,8 @@ shinyUI(navbarPage("ST558 Final Project",
   
   # Create fourth tab: Data page
   tabPanel("Data",
+           # Title of page
+           titlePanel("Data"),
            
            # Create Sidebar
            sidebarLayout(
