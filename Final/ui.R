@@ -1,4 +1,4 @@
-# Load the required `caret`, `shiny`, and `DT` packages
+# Load the required packages
 library(readr)
 library(caret)
 library(shiny)

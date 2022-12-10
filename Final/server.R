@@ -1,22 +1,24 @@
-# Load the required `tidyverse`, `caret`, `shiny`, `DT` and `ggplot2` packages
+# Load the required packages
 library(tidyverse)
+library(dplyr)
 library(caret)
 library(shiny)
 library(DT)
 library(ggplot2)
 
+# Read in and manipulate data
 math <- read_csv("./Final/student-mat.csv")
-
+# Numeric variables
 numericVars <- math %>% 
   select_if(is.numeric)
-
+# Character variables
 charVars <- math %>%
   select_if(is.character)
 
 #Set up server
 shinyServer(function(input, output, session){
   
-  # Create bar plot to visualize data
+  # Create bar plot to visualize EDA data
   output$dataPlot<-renderPlot({
     plotType <- input$plotType
     if(plotType == "Bar Graph"){
