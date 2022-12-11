@@ -18,47 +18,26 @@ charVars <- math %>%
 #Set up server
 shinyServer(function(input, output, session){
   
-  # Create data table 
-  output$dataTable<-renderDataTable({
-    numericType <- input$numericType
-    
-    if(numericType == "mean"){
-      math[math]
-    } 
-    
-    else if(numericType == "boxPlot"){
-      g2 <- ggplot(data = math, aes(x = get(input$boxXvar), y = get(input$boxYvar)))
-      g2 + geom_boxplot() +
-        geom_jitter(aes(color = get(input$boxXvar))) +
-        labs(title = "Boxplot")
-    } 
-    
-    else{
-      g3 <- ggplot(data = math, aes(x = get(input$scatterXvar), y = get(input$scatterYvar)))
-      g3 + geom_point() +
-        geom_smooth(method = lm, col = "Blue") +
-        labs(title = "Scatter Plot")
-    }
-  })
+
 
   # Create bar plot to visualize EDA data
   output$dataPlot<-renderPlot({
     plotType <- input$plotType
     if(plotType == "barGraph"){
-      g <- ggplot(data = math, aes(x = get(input$barXvar)))
+      g <- ggplot(data = math, aes(x = input$barXvar))
       g + geom_bar() +
         labs(title = "Bar Graph")
     } 
 
     else if(plotType == "boxPlot"){
-      g2 <- ggplot(data = math, aes(x = get(input$boxXvar), y = get(input$boxYvar)))
+      g2 <- ggplot(data = math, aes(x = input$boxXvar, y = input$boxYvar))
       g2 + geom_boxplot() +
-        geom_jitter(aes(color = get(input$boxXvar))) +
+        geom_jitter(aes(color = input$boxXvar)) +
         labs(title = "Boxplot")
     } 
     
     else{
-      g3 <- ggplot(data = math, aes(x = get(input$scatterXvar), y = get(input$scatterYvar)))
+      g3 <- ggplot(data = math, aes(x = input$scatterXvar, y = input$scatterYvar))
       g3 + geom_point() +
         geom_smooth(method = lm, col = "Blue") +
         labs(title = "Scatter Plot")

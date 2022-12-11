@@ -183,7 +183,7 @@ shinyUI(navbarPage("ST558 Final Project",
            )
            
   ),
-  
+  ),
   # Create fourth tab: Data page
   tabPanel("Data",
            # Title of page
