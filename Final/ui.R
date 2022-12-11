@@ -72,31 +72,6 @@ shinyUI(navbarPage("ST558 Final Project",
              # Customize Sidebar
              sidebarPanel(
                # Fourth level header
-               h4("Select options to create numerical summaries:"),
-               # Radio button widget in sidebar
-               radioButtons("numericType", label="Select the Summary Type", choices = c("Mean" = "mean", "Standard Deviation" = "sd", "Contingency Tables" = "ct"), selected = "mean"),
-               # Select options based on radio button selection
-               conditionalPanel(condition = "input.numericType == 'mean'",
-                                checkboxGroupInput("avg", "Mean of:", selected = names(numericVars), choices = names(numericVars))
-               ),
-               conditionalPanel(condition = "input.numericType == 'sd'",
-                                selectInput("stdev", "Standard deviation of:", selected = "age", choices = names(numericVars))
-               ),
-               conditionalPanel(condition = "input.numericType == 'ct'",
-                                selectInput("cntgTbl", "Type of Contingency Table:", selected = "One-Way", choices = c("One-Way" = "ow", "Two-Way" = "tw"))
-               ),
-               conditionalPanel(condition = "input.cntgTbl == 'ow'",
-                                selectInput("oneWay", "Variable:", selected = "age", choices = names(math))
-               ),
-               conditionalPanel(condition = "input.cntgTbl == 'tw'",
-                                selectInput("twoWayXvar", "First Variable:", selected = "age", choices = names(math)),
-                                selectInput("twoWayYvar", "Second Variable:", selected = "absences", choices = names(math))
-               ),
-               
-               # Line break
-               br(),
-               
-               # Fourth level header
                h4("Select options to create graphical summaries:"),
                # Radio button widget in sidebar
                radioButtons("plotType", label="Select the Plot Type", choices = c("Bar Graph" = "barGraph", "Boxplot" = "boxPlot", "Scatter Plot" = "scatterPlot"), selected = "barGraph"),
@@ -110,123 +85,15 @@ shinyUI(navbarPage("ST558 Final Project",
                ),
                conditionalPanel(condition = "input.plotType == 'scatterPlot'",
                                 selectInput("scatterXvar", "Variable on X-axis:", selected = "age", choices = names(numericVars)),
-                                selectInput("scatterYvar", "Variable on Y-axis:", selected = "age", choices = names(numericVars))
+                                selectInput("scatterYvar", "Variable on Y-axis:", selected = "absences", choices = names(numericVars))
                ),
              ),
              
              # Customize Main panel
              mainPanel(
-               #dataTable is name of "data" object in server
-               dataTableOutput("dataTable"),
                #dataPlot is name of "plot" object in server
                plotOutput("dataPlot")
              )
            )
   ),
-  # Create third tab: Modeling page
-  tabPanel("Modeling",
-           # Title of page
-           titlePanel("Modeling"),
-           
-           # Tabs within page
-           tabsetPanel(
-             tabPanel("Modeling Info",
-                      fluidRow(
-                        column(12, 
-                               h2("Mathematics Student Information App"),
-                               h3("Created by Melanie Kahn"),
-                               img(src='https://wp-media.petersons.com/blog/wp-content/uploads/2019/01/10123556/iStock-944038668.jpg', align = "center", width = "500px")
-                        ),
-             ), 
-             tabPanel("Model Fitting",
-                      # Create Sidebar
-                      sidebarLayout(
-                        # Customize Sidebar
-                        sidebarPanel(
-                          # Third level header
-                          h3("This data set comes from the", a(href = "https://topepo.github.io/caret/", target="_blank", "caret package"),"- originally from the UCI machine learning repository"),
-                          
-                          # Line break
-                          br(),
-                          
-                          # Fourth level header
-                          h4("You can create a few bar plots using the radio buttons below."),
-                          
-                          # Radio button widget in sidebar
-                          radioButtons("plotType", label="Select the Plot Type", choices = c("Just Classification", "Classification and Unemployed", "Classification and Foreign"), selected = "Just Classification"),
-                          
-                          # Line break
-                          br(),
-                          
-                          # Fourth level header
-                          h4("You can find the", strong("sample mean"), "for a few variables below:"), # Third level header
-                          
-                          # Select box widget in sidebar
-                          selectInput("var", label="Select the Plot Type", choices = c("Duration", "Amount", "Age"), selected = "Age"),
-                          
-                          # Numeric input widget in sidebar
-                          numericInput("round", label="Select the number of digits for rounding", value = 2, min = 0, max = 5, step = 1),
-                        ),
-                        
-                        # Customize Main panel
-                        mainPanel(
-                          #dataPlot is name of "plot" object in server
-                          plotOutput("dataPlot"),
-                          
-                          #dataTable is name of "data" object in server
-                          dataTableOutput("dataTable")
-                        )
-                      )
-             ), 
-             tabPanel("Prediction",
-             )
-           )
-           
-  ),
-  ),
-  # Create fourth tab: Data page
-  tabPanel("Data",
-           # Title of page
-           titlePanel("Data"),
-           
-           # Create Sidebar
-           sidebarLayout(
-             # Customize Sidebar
-             sidebarPanel(
-               # Third level header
-               h3("This data set comes from the", a(href = "https://topepo.github.io/caret/", target="_blank", "caret package"),"- originally from the UCI machine learning repository"),
-               
-               # Line break
-               br(),
-               
-               # Fourth level header
-               h4("You can create a few bar plots using the radio buttons below."),
-               
-               # Radio button widget in sidebar
-               radioButtons("plotType", label="Select the Plot Type", choices = c("Just Classification", "Classification and Unemployed", "Classification and Foreign"), selected = "Just Classification"),
-               
-               # Line break
-               br(),
-               
-               # Fourth level header
-               h4("You can find the", strong("sample mean"), "for a few variables below:"), # Third level header
-               
-               # Select box widget in sidebar
-               selectInput("var", label="Select the Plot Type", choices = c("Duration", "Amount", "Age"), selected = "Age"),
-               
-               # Numeric input widget in sidebar
-               numericInput("round", label="Select the number of digits for rounding", value = 2, min = 0, max = 5, step = 1),
-             ),
-             
-             # Customize Main panel
-             mainPanel(
-               #dataPlot is name of "plot" object in server
-               plotOutput("dataPlot"),
-               
-               #dataTable is name of "data" object in server
-               dataTableOutput("dataTable")
-             )
-           )
-  ),
-  
 ))

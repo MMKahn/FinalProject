@@ -7,7 +7,7 @@ library(DT)
 library(ggplot2)
 
 # Read in and manipulate data
-math <- read_csv("./Final/student-mat.csv")
+math <- read_csv("student-mat.csv")
 # Numeric variables
 numericVars <- math %>% 
   select_if(is.numeric)
@@ -18,27 +18,30 @@ charVars <- math %>%
 #Set up server
 shinyServer(function(input, output, session){
   
-
-
   # Create bar plot to visualize EDA data
   output$dataPlot<-renderPlot({
     plotType <- input$plotType
+    barXvar <- input$barXvar
+    boxXvar <- input$boxXvar
+    boxYvar <- input$boxYvar
+    scatterXvar <- input$scatterXvar
+    scatterYvar <- input$scatterYvar
     if(plotType == "barGraph"){
-      g <- ggplot(data = math, aes(x = input$barXvar))
+      g <- ggplot(data = math, aes(x = get(barXvar)))
       g + geom_bar() +
         labs(title = "Bar Graph")
     } 
 
     else if(plotType == "boxPlot"){
-      g2 <- ggplot(data = math, aes(x = input$boxXvar, y = input$boxYvar))
+      g2 <- ggplot(data = math, aes(x = get(boxXvar), y = get(boxYvar)))
       g2 + geom_boxplot() +
-        geom_jitter(aes(color = input$boxXvar)) +
+        geom_jitter(aes(color = get(barXvar))) +
         labs(title = "Boxplot")
     } 
     
     else{
-      g3 <- ggplot(data = math, aes(x = input$scatterXvar, y = input$scatterYvar))
-      g3 + geom_point() +
+      g3 <- ggplot(data = math, aes(x = get(scatterXvar), y = get(scatterYvar)))
+      g3 + geom_jitter() +
         geom_smooth(method = lm, col = "Blue") +
         labs(title = "Scatter Plot")
     }
