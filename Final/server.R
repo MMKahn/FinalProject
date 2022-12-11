@@ -103,6 +103,11 @@ shinyServer(function(input, output, session){
     summary(genLinear)
   })
   
+  # Math  type in classification tree explanation
+  output$gini <- renderUI({
+    withMathJax(helpText('$$Gini:2p(1-p)$$'))
+  })
+  
   # Classification Tree Model fitting
   output$summaries <- renderPrint({
     target2 <- input$target2

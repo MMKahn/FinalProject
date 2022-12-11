@@ -135,11 +135,22 @@ shinyUI(navbarPage("ST558 Final Project",
                         ),
                         column(4, 
                                h4("Classification Tree Model"),
-                               p("The data")
+                               p("Classification trees split your predictor spaces into regions in order to develop different predictions based off of those regions.  They typically use the most prevalent class as the prediction."),
+                               p("They differ from regression trees by predicting a group membership, as opposed to predicting the value of some continuous variable."),
+                               p("Instead of using the residual sum of squares for splits, classification trees try to minimize the Gini index across the splits:"),
+                               uiOutput('gini'),
+                               p("Classification trees are nice as they are easy to understand and interpret, there is no need to scale predictors or include interaction terms, and the algorithm itself essentially conducts variable selection."),
+                               p("Unfortunately, they also tend to have high variance and there's no proven optimal algorithm designed for fitting these trees as they’re greedy and do not look steps ahead."),
+                               p("Trees also require the extra step of pruning. Prediction improvements may be made by using our next model, random forest."),
+                               br(),
+                               p("All the variables in the data set can be used in this decision tree."),
+                               p("To train this model,  the method argument was specified as 'rpart'. The data was preprocessed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
                         ),
                         column(4, 
                                h4("Random Forest Model"),
-                               p("The data")
+                               p("The data"),
+                               p("All the variables in the data set can be used in this decision tree."),
+                               p("To train this model,  the method argument was specified as 'rf'. The data was preprocessed by centering and scaling. The argument tuneGrid was then used to replicate the random forest model a total of five (5) times. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
                         ),
                         column(12,
                                h4("You will select the options for running these models on the following page entitled", strong("Model Fitting"), ".")
@@ -170,14 +181,14 @@ shinyUI(navbarPage("ST558 Final Project",
                           checkboxGroupInput("predictors1", label = "Select predictor variables:", choices = names(glmMath), selected = names(glmMath)),
                           
                           # Classification tree model
-                          h4("Variable selection for GLM:"),
+                          h4("Variable selection for classification tree:"),
                           # Select input widget in sidebar
                           selectInput("target2", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = names(math)),
                           
                           # Random forest model
-                          h4("Variable selection for GLM:"),
+                          h4("Variable selection for random forest:"),
                           # Select input widget in sidebar
                           selectInput("target3", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
                           # Checkboxes in sidebar
