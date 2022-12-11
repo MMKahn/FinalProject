@@ -214,7 +214,32 @@ shinyUI(navbarPage("ST558 Final Project",
                           verbatimTextOutput("summaries")
                         )
                       )
+             ),
+             tabPanel("Prediction",
              )
            )
   ),
+  # Create fourth tab: Data page
+  tabPanel("Data",
+           # Title of page
+           titlePanel("Data"),
+           
+           # Create Sidebar
+           sidebarLayout(
+             # Customize Sidebar
+             sidebarPanel(
+               # Working with data set
+               h4("Scroll through the data set:"),
+               br(),
+               h4("Subset the data set:"),
+               br(),
+               h4("Save the data set:")
+             ),
+             
+             #Customize Main panel
+             mainPanel(
+               
+             )
+           )
+  )
 ))
