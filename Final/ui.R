@@ -106,9 +106,43 @@ shinyUI(navbarPage("ST558 Final Project",
              tabPanel("Modeling Info",
                       fluidRow(
                         column(12, 
-                               h2("Mathematics Student Information App"),
-                               h3("Created by Melanie Kahn"),
-                               img(src='https://wp-media.petersons.com/blog/wp-content/uploads/2019/01/10123556/iStock-944038668.jpg', align = "center", width = "500px")
+                               h3("This section uses three different approaches to conduct model fitting on our data set."),
+                        ),
+                        column(4, 
+                               h4("Generalized Linear Regression Model"),
+                               p("Since all variables in this data set are constrained, we can use a GLM to fit our training set because the range of the response variable is guaranteed to be fixed."),
+                               p("For this model, all binomial variables were modified to have values of 0 or 1:"),
+                               tags$ul(
+                                 tags$li(strong("school:"), "student's school ('GP' - 0 or 'MS' - 1)"),
+                                 tags$li(strong("sex:"), "student's sex ('F' - 0 or 'M' - 1)"),
+                                 tags$li(strong("address:"), "student's home address type ('U' - 0 or 'R' - 1)"),
+                                 tags$li(strong("famsize:"), "family size ('LE3' - 0 or 'GT3' - 1)"),
+                                 tags$li(strong("Pstatus:"), "parent's cohabitation status ('A' - 0 or 'T' - 1)"),
+                                 tags$li(strong("schoolsup:"), "extra educational support ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("famsup:"), "family educational support ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("paid:"), "extra paid classes within the Math course subject ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("activities:"), "extra-curricular activities ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("nursery:"), "attended nursery school ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("higher:"), "wants to take higher education ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("internet:"), "Internet access at home ('No' - 0 or 'Yes' - 1)"),
+                                 tags$li(strong("romantic:"), "with a romantic relationship ('No' - 0 or 'Yes' - 1)"),
+                               ),
+                               p("These are the only variables that will available for use when fitting this model."),
+                               p("The specific GLM model used for this app is a logistic regression model known as backward stepwise regression."),
+                               p("When it comes to traditional variable selection techniques with statistical stopping rules, backward selection is preferred over forward, especially when dealing with collinearity, because it starts with the assumedly unbaised global model."),
+                               p("The problem with stepwise selection is that it produces narrow confidence limits and does not play nice in the presence of redundant predictors."),
+                               p("To train this model, the method argument was specified as 'glmStepAIC', family as 'binomial', direction to 'backward' and metric to 'Accuracy'. The data was pre-processed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do 10 fold cross-validation using the 'cv' method.")
+                        ),
+                        column(4, 
+                               h4("Classification Tree Model"),
+                               p("The data")
+                        ),
+                        column(4, 
+                               h4("Random Forest Model"),
+                               p("The data")
+                        ),
+                        column(12,
+                               h4("You will select the options for running these models on the following page entitled", strong("Model Fitting"), ".")
                         )
                       )
              ),
@@ -117,7 +151,7 @@ shinyUI(navbarPage("ST558 Final Project",
                       sidebarLayout(
                         # Customize Sidebar
                         sidebarPanel(
-                          # Fourth level header
+                          # Split to data into train and test
                           h4("Splitting into training and test sets:"),
                           # Numeric input widget in sidebar
                           numericInput("train", label="Select a number 0-1 to indicate the proportion of total observations you'd like in the training set:", value = .7, min = 0, max = 1, step = .1),
@@ -128,13 +162,28 @@ shinyUI(navbarPage("ST558 Final Project",
                           # Line break
                           br(),
                           
-                          # Fourth level header
-                          h4("Variable selection:"),
+                          # GLM model
+                          h4("Variable selection for GLM:"),
                           # Select input widget in sidebar
-                          selectInput("target", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
+                          selectInput("target1", label = "Select target variable:", choices = names(glmMath), multiple = FALSE, selected = "glmHigher"),
                           # Checkboxes in sidebar
-                          checkboxGroupInput("predictors", label = "Select predictor variables:", choices = names(math), selected = names(math)),
-                          # Fourth level header
+                          checkboxGroupInput("predictors1", label = "Select predictor variables:", choices = names(glmMath), selected = names(glmMath)),
+                          
+                          # Classification tree model
+                          h4("Variable selection for GLM:"),
+                          # Select input widget in sidebar
+                          selectInput("target2", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
+                          # Checkboxes in sidebar
+                          checkboxGroupInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = names(math)),
+                          
+                          # Random forest model
+                          h4("Variable selection for GLM:"),
+                          # Select input widget in sidebar
+                          selectInput("target3", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
+                          # Checkboxes in sidebar
+                          checkboxGroupInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = names(math)),
+                          
+                          # Run all models at the same time
                           h4("Click the button when ready to run all three models"),
                           # Action button to fit models
                           actionButton("button", "Fit Models")
@@ -142,7 +191,7 @@ shinyUI(navbarPage("ST558 Final Project",
                         
                         #Customize Main panel
                         mainPanel(
-                          tableOutput("summaries")
+                          verbatimTextOutput("summaries")
                         )
                       )
              )

@@ -14,6 +14,34 @@ numericVars <- math %>%
 # Character variables
 charVars <- math %>%
   select_if(is.character)
+# New data set for GLM model
+glmMath <- math %>%
+  mutate(glmSex = ifelse(sex == "F", 0, 1),
+         glmAddress = ifelse(address == "U", 0, 1),
+         glmFamSize = ifelse(famsize == "LE3", 0, 1),
+         glmPstatus = ifelse(Pstatus == "A", 0, 1),
+         glmSchoolSup = ifelse(schoolsup == "no", 0, 1),
+         glmFamSup = ifelse(famsup == "no", 0, 1),
+         glmPaid = ifelse(paid == "no", 0, 1),
+         glmActivities = ifelse(activities == "no", 0, 1),
+         glmNursery = ifelse(nursery == "no", 0, 1),
+         glmHigher = ifelse(higher == "no", 0, 1),
+         glmInternet = ifelse(internet == "no", 0, 1),
+         glmRomantic = ifelse(romantic == "no", 0, 1)) %>%
+  select(starts_with("glm")) %>%
+  rename(sex = glmSex,
+         address = glmAddress,
+         famsize = glmFamSize,
+         Pstatus = glmPstatus,
+         schoolsup = glmSchoolSup,
+         famsup = glmFamSup,
+         paid = glmPaid,
+         activities = glmActivities,
+         nursery = glmNursery,
+         higher = glmHigher,
+         internet = glmInternet,
+         romantic = glmRomantic)
+
 
 #Set up server
 shinyServer(function(input, output, session){
@@ -55,19 +83,58 @@ shinyServer(function(input, output, session){
     paste("The test subset has the remaining", (1-input$train)*100, "%.", sep = " ")
   })
   
-  # Model fitting
-  fitting <- eventReactive(input$button, {
+  # GLM Model fitting
+  output$summaries <- renderPrint({
+    target1 <- input$target1
+    train <- input$train
+    predictors1 <- input$predictors1
     set.seed(100)
-    mathIndex <- createDataPartition(input$target, p = input$train, list = FALSE)
+    mathIndex <- createDataPartition(get(target1), p = train, list = FALSE)
     mathTrn <- math[mathIndex, ]
     mathTst <- math[-mathIndex, ]
-    linear <- train(input$target ~ input$predictors, 
-                 data = newsTrain,
-                 method = "lm",
-                 preProcess = c("center", "scale"),
-                 trControl = trainControl(method = "cv"))
+    genLinear <- train(get(target1) ~ get(predictors1), 
+                    data = mathTrn,
+                    method = "glmStepAIC",
+                    preProcess = c("center", "scale"),
+                    trControl = trainControl(method = "cv", number = 10),
+                    family = "binomial",
+                    direction = "backward",
+                    metric = "Accuracy")
+    summary(genLinear)
   })
-  output$summaries <- renderTable({
-    summary(fitting())
+  
+  # Classification Tree Model fitting
+  output$summaries <- renderPrint({
+    target2 <- input$target2
+    train <- input$train
+    predictors2 <- input$predictors2
+    set.seed(100)
+    mathIndex <- createDataPartition(get(target2), p = train, list = FALSE)
+    mathTrn <- math[mathIndex, ]
+    mathTst <- math[-mathIndex, ]
+    classTree <- train(get(target2) ~ get(predictors2), 
+                       data = mathTrn,
+                       method = "rpart",
+                       preProcess = c("center", "scale"),
+                       trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3))
+    summary(classTree)
+  })
+  
+  # Random Forest Model fitting
+  output$summaries <- renderPrint({
+    target3 <- input$target3
+    train <- input$train
+    predictors3 <- input$predictors3
+    set.seed(100)
+    mathIndex <- createDataPartition(get(target3), p = train, list = FALSE)
+    mathTrn <- math[mathIndex, ]
+    mathTst <- math[-mathIndex, ]
+    randForest <- train(get(target3) ~ get(predictors3), 
+                        data = mathTrn,
+                        method = "rf",
+                        preProcess = c("center", "scale"),
+                        trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
+                        tuneGrid = data.frame(mtry = 1:5))
+    summary(randForest)
   })
 })
