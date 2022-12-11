@@ -75,6 +75,33 @@ shinyServer(function(input, output, session){
     }
   })
   
+  #Numeric Summaries
+  output$dataTable<-renderDataTable({
+    numericType <- input$numericType
+    avg <- input$avg
+    stdev <- input$stdev
+    cntgTbl <- input$cntgTbl
+    oneWay <- input$oneWay
+    twoWayXvar <- input$twoWayXvar
+    twoWayYvar <- input$twoWayYvar
+    if (numericType == 'ct') {
+      if (cntgTbl == 'ow'){
+        data.frame(table(oneWay))
+      }
+      else {
+        data.frame(table(twoWayXvar, twoWayYvar))
+      }
+    }
+    
+    else if (numericType == 'mean') {
+      data.frame(mean(avg))
+    }
+    else {
+      data.frame(sd(stdev))
+    }
+    
+  })
+  
   # Create text when splitting data into training and test sets
   output$mathTrain<-renderText({
     paste("The training subset has", input$train*100, "% of the observations from the data set.", sep = " ")
