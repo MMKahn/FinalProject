@@ -18,7 +18,7 @@ charVars <- math %>%
 #Set up server
 shinyServer(function(input, output, session){
   
-  # Create bar plot to visualize EDA data
+  # Create plots to visualize EDA data
   output$dataPlot<-renderPlot({
     plotType <- input$plotType
     barXvar <- input$barXvar
@@ -47,4 +47,27 @@ shinyServer(function(input, output, session){
     }
   })
   
+  # Create text when splitting data into training and test sets
+  output$mathTrain<-renderText({
+    paste("The training subset has", input$train*100, "% of the observations from the data set.", sep = " ")
+  })
+  output$mathTest<-renderText({
+    paste("The test subset has the remaining", (1-input$train)*100, "%.", sep = " ")
+  })
+  
+  # Model fitting
+  fitting <- eventReactive(input$button, {
+    set.seed(100)
+    mathIndex <- createDataPartition(input$target, p = input$train, list = FALSE)
+    mathTrn <- math[mathIndex, ]
+    mathTst <- math[-mathIndex, ]
+    linear <- train(input$target ~ input$predictors, 
+                 data = newsTrain,
+                 method = "lm",
+                 preProcess = c("center", "scale"),
+                 trControl = trainControl(method = "cv"))
+  })
+  output$summaries <- renderTable({
+    summary(fitting())
+  })
 })

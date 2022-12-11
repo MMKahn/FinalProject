@@ -96,4 +96,56 @@ shinyUI(navbarPage("ST558 Final Project",
              )
            )
   ),
+  # Create third tab: Modeling page
+  tabPanel("Modeling",
+           # Title of page
+           titlePanel("Modeling"),
+           
+           # Tabs within page
+           tabsetPanel(
+             tabPanel("Modeling Info",
+                      fluidRow(
+                        column(12, 
+                               h2("Mathematics Student Information App"),
+                               h3("Created by Melanie Kahn"),
+                               img(src='https://wp-media.petersons.com/blog/wp-content/uploads/2019/01/10123556/iStock-944038668.jpg', align = "center", width = "500px")
+                        )
+                      )
+             ),
+             tabPanel("Model Fitting",
+                      # Create Sidebar
+                      sidebarLayout(
+                        # Customize Sidebar
+                        sidebarPanel(
+                          # Fourth level header
+                          h4("Splitting into training and test sets:"),
+                          # Numeric input widget in sidebar
+                          numericInput("train", label="Select a number 0-1 to indicate the proportion of total observations you'd like in the training set:", value = .7, min = 0, max = 1, step = .1),
+                          # mathTrain and mathTest are names of "text" objects in server
+                          textOutput("mathTrain"),
+                          textOutput("mathTest"),
+                          
+                          # Line break
+                          br(),
+                          
+                          # Fourth level header
+                          h4("Variable selection:"),
+                          # Select input widget in sidebar
+                          selectInput("target", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
+                          # Checkboxes in sidebar
+                          checkboxGroupInput("predictors", label = "Select predictor variables:", choices = names(math), selected = names(math)),
+                          # Fourth level header
+                          h4("Click the button when ready to run all three models"),
+                          # Action button to fit models
+                          actionButton("button", "Fit Models")
+                        ),
+                        
+                        #Customize Main panel
+                        mainPanel(
+                          tableOutput("summaries")
+                        )
+                      )
+             )
+           )
+  ),
 ))
