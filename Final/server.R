@@ -63,7 +63,7 @@ shinyServer(function(input, output, session){
     else if(plotType == "boxPlot"){
       g2 <- ggplot(data = math, aes(x = get(boxXvar), y = get(boxYvar)))
       g2 + geom_boxplot() +
-        geom_jitter(aes(color = get(barXvar))) +
+        geom_jitter(aes(color = get(boxXvar))) +
         labs(title = "Boxplot")
     } 
     
@@ -106,6 +106,10 @@ shinyServer(function(input, output, session){
   # Math  type in classification tree explanation
   output$gini <- renderUI({
     withMathJax(helpText('$$Gini:2p(1-p)$$'))
+  })
+ 
+  output$deviance <- renderUI({
+    withMathJax(helpText('$$Deviance:−2plog(p)−2(1−p)log(1−p)$$'))
   })
   
   # Classification Tree Model fitting
