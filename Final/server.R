@@ -85,6 +85,16 @@ shinyServer(function(input, output, session){
     summary(math[,as.numeric(input$var)])
   })
   
+  numSum <- reactive({
+    var <- input$var
+    summaries <- math %>%
+      select(var) %>%
+      summarize(mean = mean(get(var)), sd = sd(get(var)))
+  })
+  
+  output$summary <- renderDataTable({
+    numSum()
+  })
   # Create text when splitting data into training and test sets
   output$mathTrain<-renderText({
     paste("The training subset has", input$train*100, "% of the observations from the data set.", sep = " ")

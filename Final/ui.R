@@ -91,7 +91,7 @@ shinyUI(navbarPage("ST558 Final Project",
                
                # Numerical summaries
                h4("Select options to create numerical summaries:"),
-               selectInput("var", label="Choose a variable", choices = names(numericVars), selected = names(numericVars), multiple = TRUE),
+               selectInput("var", label="Choose a variable", choices = names(numericVars), selected = names(numericVars)),
              ),
              
              # Customize Main panel
@@ -99,6 +99,7 @@ shinyUI(navbarPage("ST558 Final Project",
                #dataPlot is name of "plot" object in server
                plotOutput("dataPlot"),
                #dataTable is name of "data" object in server
+               dataTableOutput("summary"),
                verbatimTextOutput("sum")
 
              )
