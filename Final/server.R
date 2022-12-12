@@ -5,7 +5,6 @@ library(caret)
 library(shiny)
 library(DT)
 library(ggplot2)
-library(corrplot)
 
 # Read in and manipulate data
 math <- read_csv("student-mat.csv")

@@ -58,7 +58,7 @@ shinyUI(navbarPage("ST558 Final Project",
              column(12,
                     h4("About the App"),
                     p("The purpose of the following analysis is to conduct exploratory analysis and create predictive models for this math student data set to find which one performs the best."),
-                    p("After splitting the data into a training and test set, the performance of a gerneralized linear regression model (GLM), a classification tree model, and a random forest model will be compared based on the root-mean-square error (RMSE) calculation."),
+                    p("After splitting the data into a training and test set, the performance of a generalized linear regression model (GLM), a classification tree model, and a random forest model will be compared based on the root-mean-square error (RMSE) calculation."),
                     p("The best model will have the smallest RMSE from the test set."),
                     p("This process can be customized by the user of the app.")
              )
@@ -119,11 +119,11 @@ shinyUI(navbarPage("ST558 Final Project",
              # Customize Main panel
              mainPanel(
                #dataPlot is name of "plot" object in server
-               h4("Graphs of Data"),
+               h4("Graphs of Data", style = "color:blue;"),
                plotOutput("dataPlot"),
-               h4("Numerical Summaries of Data"),
+               h4("Numerical Summaries of Data", style = "color:blue;"),
                dataTableOutput("summary"),
-               h4("Frequency of Data"),
+               h4("Frequency of Data", style = "color:blue;"),
                dataTableOutput("continTable"),
              )
            )
@@ -139,30 +139,19 @@ shinyUI(navbarPage("ST558 Final Project",
                       fluidRow(
                         column(12, 
                                h3("This section uses three different approaches to conduct model fitting on our data set."),
+                               h4("You will select options for running these models on the following page entitled", strong("Model Fitting"), "."),
+                               h5("Note that the response variable,", strong("higher"), " - indicating if a math student plans to take higher education - is fixed and cannot be changed by the user."),
+                               p("This is done due to the binomial nature of the GLM model used in this project.")
                         ),
                         column(4, 
                                h4("Generalized Linear Regression Model"),
                                p("Since all variables in this data set are constrained, we can use a GLM to fit our training set because the range of the response variable is guaranteed to be fixed."),
-                               p("For this model, all binomial variables were modified to have values of 0 or 1:"),
-                               tags$ul(
-                                 tags$li(strong("school:"), "student's school ('GP' - 0 or 'MS' - 1)"),
-                                 tags$li(strong("sex:"), "student's sex ('F' - 0 or 'M' - 1)"),
-                                 tags$li(strong("address:"), "student's home address type ('U' - 0 or 'R' - 1)"),
-                                 tags$li(strong("famsize:"), "family size ('LE3' - 0 or 'GT3' - 1)"),
-                                 tags$li(strong("Pstatus:"), "parent's cohabitation status ('A' - 0 or 'T' - 1)"),
-                                 tags$li(strong("schoolsup:"), "extra educational support ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("famsup:"), "family educational support ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("paid:"), "extra paid classes within the Math course subject ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("activities:"), "extra-curricular activities ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("nursery:"), "attended nursery school ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("higher:"), "wants to take higher education ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("internet:"), "Internet access at home ('No' - 0 or 'Yes' - 1)"),
-                                 tags$li(strong("romantic:"), "with a romantic relationship ('No' - 0 or 'Yes' - 1)"),
-                               ),
-                               p("These are the only variables that will available for use when fitting this model."),
+                               p("For this model, a binary response variable is required, which is why the higher education variable has been selected"),
+                               br(),
                                p("The specific GLM model used for this app is a logistic regression model known as backward stepwise regression."),
                                p("When it comes to traditional variable selection techniques with statistical stopping rules, backward selection is preferred over forward, especially when dealing with collinearity, because it starts with the assumedly unbaised global model."),
                                p("The problem with stepwise selection is that it produces narrow confidence limits and does not play nice in the presence of redundant predictors."),
+                               br()
                                p("To train this model, the method argument was specified as 'glmStepAIC', family as 'binomial', direction to 'backward' and metric to 'Accuracy'. The data was pre-processed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do 10 fold cross-validation using the 'cv' method.")
                         ),
                         column(4, 
@@ -178,7 +167,6 @@ shinyUI(navbarPage("ST558 Final Project",
                                p("Trees also require the extra step of pruning as not to overfit to the training data. While this decreases the variance,it increases the bias a little bit, but hopefully gains overall prediction strength."),
                                p("Prediction improvements may be made by using our next model, random forest."),
                                br(),
-                               p("All the variables in the data set can be used in this decision tree."),
                                p("To train this model,  the method argument was specified as 'rpart'. The data was preprocessed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
                         ),
                         column(4, 
@@ -191,11 +179,7 @@ shinyUI(navbarPage("ST558 Final Project",
                                p("By averaging the predictions, random forests decrease the variance our prediction, however they do lose interpretability."),
                                p("Random forest models also take a lot of processing power and computation time, slowing down results."),
                                br(),
-                               p("All the variables in the data set can be used in this decision tree."),
                                p("To train this model,  the method argument was specified as 'rf'. The data was preprocessed by centering and scaling. The argument tuneGrid was then used to replicate the random forest model a total of five (5) times. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
-                        ),
-                        column(12,
-                               h4("You will select the options for running these models on the following page entitled", strong("Model Fitting"), ".")
                         )
                       )
              ),
