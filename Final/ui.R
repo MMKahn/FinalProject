@@ -181,7 +181,8 @@ shinyUI(navbarPage("ST558 Final Project",
                                p("This means that instead of calculating a statistic, we're going to get a bootstrap sample with random predictors to fit one tree; another bootstrap sample with random predictors to fit another tree; and do that repeatedly."),
                                p("After the trees are created from the bootstrap samples, we disaggregate the trees, and take the average."),
                                p("Using an average from a plethora of models tends to predict better than a single model does. "),
-                               p("By averaging the predictions, we decrease the variance our prediction, however we do lose interpretability.  "),
+                               p("By averaging the predictions, random forests decrease the variance our prediction, however they do lose interpretability."),
+                               p("Random forest models also take a lot of processing power and computation time, slowing down results."),
                                br(),
                                p("All the variables in the data set can be used in this decision tree."),
                                p("To train this model,  the method argument was specified as 'rf'. The data was preprocessed by centering and scaling. The argument tuneGrid was then used to replicate the random forest model a total of five (5) times. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
@@ -210,21 +211,21 @@ shinyUI(navbarPage("ST558 Final Project",
                           # GLM model
                           h4("Variable selection for GLM:"),
                           # Select input widget in sidebar
-                          selectInput("target1", label = "Select target variable:", choices = names(glmMath), multiple = FALSE, selected = "glmHigher"),
+                          selectInput("target1", label = "Select target variable:", choices = names(glmMath), multiple = FALSE, selected = "higher"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors1", label = "Select predictor variables:", choices = names(glmMath), selected = names(glmMath)),
                           
                           # Classification tree model
                           h4("Variable selection for classification tree:"),
                           # Select input widget in sidebar
-                          selectInput("target2", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
+                          selectInput("target2", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = names(math)),
                           
                           # Random forest model
                           h4("Variable selection for random forest:"),
                           # Select input widget in sidebar
-                          selectInput("target3", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "glmHigher"),
+                          selectInput("target3", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = names(math)),
                           
@@ -236,7 +237,9 @@ shinyUI(navbarPage("ST558 Final Project",
                         
                         #Customize Main panel
                         mainPanel(
-                          verbatimTextOutput("summaries")
+                          verbatimTextOutput("glmModel"),
+                          verbatimTextOutput("ctModel"),
+                          verbatimTextOutput("rfModel")
                         )
                       )
              ),

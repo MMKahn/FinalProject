@@ -111,7 +111,8 @@ shinyServer(function(input, output, session){
   })
   
   # GLM Model fitting
-  output$summaries <- renderPrint({
+  # Training
+  glm <- reactive({
     target1 <- input$target1
     train <- input$train
     predictors1 <- input$predictors1
@@ -120,14 +121,17 @@ shinyServer(function(input, output, session){
     mathTrn <- math[mathIndex, ]
     mathTst <- math[-mathIndex, ]
     genLinear <- train(get(target1) ~ get(predictors1), 
-                    data = mathTrn,
-                    method = "glmStepAIC",
-                    preProcess = c("center", "scale"),
-                    trControl = trainControl(method = "cv", number = 10),
-                    family = "binomial",
-                    direction = "backward",
-                    metric = "Accuracy")
-    summary(genLinear)
+                       data = mathTrn,
+                       method = "glmStepAIC",
+                       preProcess = c("center", "scale"),
+                       trControl = trainControl(method = "cv", number = 10),
+                       family = "binomial",
+                       direction = "backward")
+    genLinear
+  })
+  # Output
+  output$glmModel <- renderPrint({
+    glm()
   })
   
   # Math  type in classification tree explanation
@@ -140,7 +144,8 @@ shinyServer(function(input, output, session){
   })
   
   # Classification Tree Model fitting
-  output$summaries <- renderPrint({
+  # Training
+  classTreeModel <- reactive({
     target2 <- input$target2
     train <- input$train
     predictors2 <- input$predictors2
@@ -153,11 +158,16 @@ shinyServer(function(input, output, session){
                        method = "rpart",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3))
-    summary(classTree)
+    classTree
+  }) 
+  # Output
+  output$ctModel <- renderPrint({
+    classTreeModel()
   })
   
   # Random Forest Model fitting
-  output$summaries <- renderPrint({
+  # Training
+  rf <- reactive({
     target3 <- input$target3
     train <- input$train
     predictors3 <- input$predictors3
@@ -171,6 +181,10 @@ shinyServer(function(input, output, session){
                         preProcess = c("center", "scale"),
                         trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
                         tuneGrid = data.frame(mtry = 1:5))
-    summary(randForest)
+    randForest
+  })
+  # Output
+  output$rfModel <- renderPrint({
+    rf()
   })
 })
