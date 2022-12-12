@@ -73,28 +73,26 @@ shinyServer(function(input, output, session){
       data.frame(sd(stdev))
     }
   })
-  # Try numeric summaries again
-  cormat <- reactive({
-    round(cor(math), 1)
-  })
-  output$correlationMatrix <- renderPlot({
-    corrplot(cormat(), type = "lower", order = "hclust", method = "number")
-  })
-  
-  output$sum <- renderPrint({
-    summary(math[,as.numeric(input$var)])
-  })
-  
+
+  # Numerical summaries working
   numSum <- reactive({
-    var <- input$var
+    numVar <- input$numVar
     summaries <- math %>%
-      select(var) %>%
-      summarize(mean = mean(get(var)), sd = sd(get(var)))
+      select(all_of(numVar)) %>%
+      summarize(sd = round(sd(get(numVar)), 2), 
+                minimum = round(min(get(numVar)), 2), 
+                Q1 = round(quantile(get(numVar), prob = 0.25), 2),
+                median = round(median(get(numVar)), 2),
+                mean = round(mean(get(numVar)), 2),
+                Q3 = round(quantile(get(numVar), prob = 0.75), 2),
+                maximum = round(max(get(numVar)), 2)
+                )
   })
   
   output$summary <- renderDataTable({
     numSum()
   })
+  
   # Create text when splitting data into training and test sets
   output$mathTrain<-renderText({
     paste("The training subset has", input$train*100, "% of the observations from the data set.", sep = " ")
