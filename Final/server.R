@@ -77,8 +77,23 @@ shinyServer(function(input, output, session){
   # Numerical summaries working
   numSum <- reactive({
     numVar <- input$numVar
-    summaries <- math %>%
-      select(all_of(numVar)) %>%
+    if (input$groupVar == 'school' & input$groupby){
+      summaries <- math %>%
+        select("school", numVar) %>%
+        group_by(school)
+        summarize(sd = round(sd(get(numVar)), 2), 
+                  minimum = round(min(get(numVar)), 2), 
+                  Q1 = round(quantile(get(numVar), prob = 0.25), 2),
+                  median = round(median(get(numVar)), 2),
+                  mean = round(mean(get(numVar)), 2),
+                  Q3 = round(quantile(get(numVar), prob = 0.75), 2),
+                  maximum = round(max(get(numVar)), 2)
+        )
+    }
+    else if (input$groupVar == 'sex' & input$groupby){
+      summaries <- math %>%
+        select("sex", numVar) %>%
+        group_by(sex)
       summarize(sd = round(sd(get(numVar)), 2), 
                 minimum = round(min(get(numVar)), 2), 
                 Q1 = round(quantile(get(numVar), prob = 0.25), 2),
@@ -86,7 +101,33 @@ shinyServer(function(input, output, session){
                 mean = round(mean(get(numVar)), 2),
                 Q3 = round(quantile(get(numVar), prob = 0.75), 2),
                 maximum = round(max(get(numVar)), 2)
-                )
+      )
+    }
+    else if (input$groupVar == 'both' & input$groupby){
+      summaries <- math %>%
+        select("school", "sex", numVar) %>%
+        group_by(school, sex)
+      summarize(sd = round(sd(get(numVar)), 2), 
+                minimum = round(min(get(numVar)), 2), 
+                Q1 = round(quantile(get(numVar), prob = 0.25), 2),
+                median = round(median(get(numVar)), 2),
+                mean = round(mean(get(numVar)), 2),
+                Q3 = round(quantile(get(numVar), prob = 0.75), 2),
+                maximum = round(max(get(numVar)), 2)
+      )
+    } 
+    else {
+      summaries <- math %>%
+        select(all_of(numVar)) %>%
+        summarize(sd = round(sd(get(numVar)), 2), 
+                  minimum = round(min(get(numVar)), 2), 
+                  Q1 = round(quantile(get(numVar), prob = 0.25), 2),
+                  median = round(median(get(numVar)), 2),
+                  mean = round(mean(get(numVar)), 2),
+                  Q3 = round(quantile(get(numVar), prob = 0.75), 2),
+                  maximum = round(max(get(numVar)), 2)
+        )
+    }
   })
   
   output$summary <- renderDataTable({

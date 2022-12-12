@@ -75,23 +75,29 @@ shinyUI(navbarPage("ST558 Final Project",
                # Graphical summaries
                h4("Select options to create graphical summaries:"),
                # Radio button widget in sidebar
-               radioButtons("plotType", label="Select the Plot Type", choices = c("Bar Graph" = "barGraph", "Boxplot" = "boxPlot", "Scatter Plot" = "scatterPlot"), selected = "barGraph"),
+               radioButtons("plotType", label = "Select the Plot Type", choices = c("Bar Graph" = "barGraph", "Boxplot" = "boxPlot", "Scatter Plot" = "scatterPlot"), selected = "barGraph"),
                # Select options based on radio button selection
                conditionalPanel(condition = "input.plotType == 'barGraph'",
-                                selectInput("barXvar", "Variable on X-axis:", selected = "school", choices = names(charVars))
+                                selectInput("barXvar", "Variable on X-axis:", choices = names(charVars), selected = "school")
                ),
                conditionalPanel(condition = "input.plotType == 'boxPlot'",
-                                selectInput("boxXvar", "Variable on X-axis:", selected = "school", choices = names(charVars)),
-                                selectInput("boxYvar", "Variable on Y-axis:", selected = "age", choices = names(numericVars))
+                                selectInput("boxXvar", "Variable on X-axis:", choices = names(charVars), selected = "school"),
+                                selectInput("boxYvar", "Variable on Y-axis:", choices = names(numericVars), selected = "age")
                ),
                conditionalPanel(condition = "input.plotType == 'scatterPlot'",
-                                selectInput("scatterXvar", "Variable on X-axis:", selected = "age", choices = names(numericVars)),
-                                selectInput("scatterYvar", "Variable on Y-axis:", selected = "absences", choices = names(numericVars))
+                                selectInput("scatterXvar", "Variable on X-axis:", choices = names(numericVars), selected = "age"),
+                                selectInput("scatterYvar", "Variable on Y-axis:", choices = names(numericVars), selected = "absences")
                ),
                
                # Numerical summaries
                h4("Select options to create numerical summaries:"),
-               selectInput("numVar", label="Choose a variable", choices = names(numericVars), selected = names(numericVars)),
+               selectInput("numVar", label = "Select a variable to summarize:", choices = names(numericVars), selected = "age"),
+               p("Would you like to group your results based on a categorical variable?"),
+               checkboxInput("groupby", label = "Yes", value = FALSE),
+               conditionalPanel(condition = "input.groupby",
+                                selectInput("groupVar", label = "Select a variable(s) to group by:", choices = c("school" = "school", "sex" = "sex", "both school and sex" = "both"), selected = "school")
+               ),
+               
              ),
              
              # Customize Main panel
