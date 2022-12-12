@@ -244,23 +244,25 @@ shinyUI(navbarPage("ST558 Final Project",
   # Create fourth tab: Data page
   tabPanel("Data",
            # Title of page
-           titlePanel("Data"),
+           titlePanel("Subset and Save the Data"),
            
            # Create Sidebar
            sidebarLayout(
              # Customize Sidebar
              sidebarPanel(
                # Working with data set
-               h4("Scroll through the data set:"),
-               br(),
                h4("Subset the data set:"),
+               checkboxGroupInput("subset", "Select variables:", choices = names(math), selected = names(math)),
+               selectInput("skewl", "Select the school", choices = c("Gabriel Pereira" = "gp", "Mousinho da Silveira" = "mds", "Both" = "both"), selected = "both"),
                br(),
-               h4("Save the data set:")
+               h4("Save the data set:"),
+               p("The resulting file will be in .csv format."),
+               downloadButton("save", "Download")
              ),
              
              #Customize Main panel
              mainPanel(
-               
+               dataTableOutput("tbl")
              )
            )
   )

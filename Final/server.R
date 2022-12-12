@@ -188,4 +188,33 @@ shinyServer(function(input, output, session){
   output$rfModel <- renderPrint({
     rf()
   })
+  
+  # Subsetting data
+  subsetVars <- reactive({
+    colSubset <- input$subset
+    rowSubset <- input$skewl
+    school <- math$school
+    if (rowSubset == "gp"){
+      math[school == "GP", colSubset]
+    }
+    else if (rowSubset == "mds"){
+      math[school == "MS", colSubset]
+    }
+    else {
+      math[,colSubset]
+    }
+  })
+  
+  # Scroll through the data set
+  output$tbl <- renderDataTable({
+    subsetVars()
+  })
+  
+  #Save the data set
+  output$save <- downloadHandler(
+    filename = "mathStudents.csv",
+    content = function(file) {
+      write.csv(subsetVars(), file, row.names = FALSE)
+    }
+  )
 })
