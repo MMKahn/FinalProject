@@ -89,6 +89,8 @@ shinyUI(navbarPage("ST558 Final Project",
                                 selectInput("scatterYvar", "Variable on Y-axis:", choices = names(numericVars), selected = "absences")
                ),
                
+               br(),
+               
                # Numerical summaries
                h4("Select options to create numerical summaries:"),
                selectInput("numVar", label = "Select a variable to summarize:", choices = names(numericVars), selected = "age"),
@@ -100,14 +102,14 @@ shinyUI(navbarPage("ST558 Final Project",
                p("Would you like to create a contingency table?"),
                checkboxInput("ct", label = "Yes", value = FALSE),
                conditionalPanel(condition = "input.ct",
-                                selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"))
-               ),
-               conditionalPanel(condition = "input.typeCT == 'ow'",
-                                selectInput("oneWay", label = "Select a variable:", choices = names(math), selected = "school")
-               ),
-               conditionalPanel(condition = "input.typeCT == 'tw'",
-                                selectInput("twoWayXvar", "First Variable:", choices = names(math), selected = "age"),
-                                selectInput("twoWayYvar", "Second Variable:", choices = names(math), selected = "absences")
+                                selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"), selected = 'ow'),
+                                conditionalPanel(condition = "input.typeCT == 'ow'",
+                                                 selectInput("oneWay", label = "Select a variable:", choices = names(math), selected = "school")
+                                ),
+                                conditionalPanel(condition = "input.typeCT == 'tw'",
+                                                 selectInput("twoWayXvar", "First Variable:", choices = names(math), selected = "age"),
+                                                 selectInput("twoWayYvar", "Second Variable:", choices = names(math), selected = "absences")
+                                )
                ),
              ),
              

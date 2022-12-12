@@ -56,10 +56,14 @@ shinyServer(function(input, output, session){
     twoWayXvar <- input$twoWayXvar
     twoWayYvar <- input$twoWayYvar
     if (typeCT == 'ow'){
-      data.frame(table(get(oneWay)))
+      one <- data.frame(table(get(oneWay)))
+      colnames(one) <- c(get(oneWay), "count")
+      one
     }
     else {
-      data.frame(table(get(twoWayXvar), get(twoWayYvar)))
+      two <- data.frame(table(get(twoWayXvar), get(twoWayYvar)))
+      colnames(two) <- c(get(twoWayXvar), get(twoWayYvar), "count")
+      two
     }
   })
   
