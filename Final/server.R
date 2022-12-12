@@ -5,6 +5,7 @@ library(caret)
 library(shiny)
 library(DT)
 library(ggplot2)
+library(corrplot)
 
 # Read in and manipulate data
 math <- read_csv("student-mat.csv")
@@ -14,34 +15,6 @@ numericVars <- math %>%
 # Character variables
 charVars <- math %>%
   select_if(is.character)
-# New data set for GLM model
-glmMath <- math %>%
-  mutate(glmSex = ifelse(sex == "F", 0, 1),
-         glmAddress = ifelse(address == "U", 0, 1),
-         glmFamSize = ifelse(famsize == "LE3", 0, 1),
-         glmPstatus = ifelse(Pstatus == "A", 0, 1),
-         glmSchoolSup = ifelse(schoolsup == "no", 0, 1),
-         glmFamSup = ifelse(famsup == "no", 0, 1),
-         glmPaid = ifelse(paid == "no", 0, 1),
-         glmActivities = ifelse(activities == "no", 0, 1),
-         glmNursery = ifelse(nursery == "no", 0, 1),
-         glmHigher = ifelse(higher == "no", 0, 1),
-         glmInternet = ifelse(internet == "no", 0, 1),
-         glmRomantic = ifelse(romantic == "no", 0, 1)) %>%
-  select(starts_with("glm")) %>%
-  rename(sex = glmSex,
-         address = glmAddress,
-         famsize = glmFamSize,
-         Pstatus = glmPstatus,
-         schoolsup = glmSchoolSup,
-         famsup = glmFamSup,
-         paid = glmPaid,
-         activities = glmActivities,
-         nursery = glmNursery,
-         higher = glmHigher,
-         internet = glmInternet,
-         romantic = glmRomantic)
-
 
 #Set up server
 shinyServer(function(input, output, session){
@@ -100,18 +73,17 @@ shinyServer(function(input, output, session){
       data.frame(sd(stdev))
     }
   })
-  
   # Try numeric summaries again
   cormat <- reactive({
-    round(cor(InputDataset()), 1)
+    round(cor(math), 1)
   })
-  output$Corr <-
-    renderPlot(corrplot(
-      cormat(),
-      type = "lower",
-      order = "hclust",
-      method = "number"
-    ))
+  output$correlationMatrix <- renderPlot({
+    corrplot(cormat(), type = "lower", order = "hclust", method = "number")
+  })
+  
+  output$sum <- renderPrint({
+    summary(math[,as.numeric(input$var)])
+  })
   
   # Create text when splitting data into training and test sets
   output$mathTrain<-renderText({
@@ -139,7 +111,7 @@ shinyServer(function(input, output, session){
   # Training
   glm <- reactive({
     predictors1 <- input$predictors1
-    genLinear <- train(glmMath$higher ~ get(predictors1), 
+    genLinear <- train(math$G3 ~ get(predictors1), 
                        data = mathTrn,
                        method = "glmStepAIC",
                        preProcess = c("center", "scale"),

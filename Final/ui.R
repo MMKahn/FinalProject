@@ -91,25 +91,7 @@ shinyUI(navbarPage("ST558 Final Project",
                
                # Numerical summaries
                h4("Select options to create numerical summaries:"),
-               # Radio button widget in sidebar
-               radioButtons("numericType", label="Select the Summary Type", choices = c("Mean" = "mean", "Standard Deviation" = "sd", "Contingency Tables" = "ct"), selected = "mean"),
-               # Select options based on radio button selection
-               conditionalPanel(condition = "input.numericType == 'mean'",
-                                checkboxGroupInput("avg", "Mean of:", selected = names(numericVars), choices = names(numericVars))
-               ),
-               conditionalPanel(condition = "input.numericType == 'sd'",
-                                checkboxGroupInput("stdev", "Standard deviation of:", selected = names(numericVars), choices = names(numericVars))
-               ),
-               conditionalPanel(condition = "input.numericType == 'ct'",
-                                selectInput("cntgTbl", "Type of Contingency Table:", selected = "One-Way", choices = c("One-Way" = "ow", "Two-Way" = "tw"))
-               ),
-               conditionalPanel(condition = "input.cntgTbl == 'ow'",
-                                selectInput("oneWay", "Variable:", selected = "age", choices = names(math))
-               ),
-               conditionalPanel(condition = "input.cntgTbl == 'tw'",
-                                selectInput("twoWayXvar", "First Variable:", selected = "age", choices = names(math)),
-                                selectInput("twoWayYvar", "Second Variable:", selected = "absences", choices = names(math))
-               ),
+               selectInput("var", label="Choose a variable", choices = names(numericVars), selected = names(numericVars), multiple = TRUE),
              ),
              
              # Customize Main panel
@@ -117,7 +99,8 @@ shinyUI(navbarPage("ST558 Final Project",
                #dataPlot is name of "plot" object in server
                plotOutput("dataPlot"),
                #dataTable is name of "data" object in server
-               dataTableOutput("dataTable")
+               verbatimTextOutput("sum")
+
              )
            )
   ),
