@@ -211,17 +211,17 @@ shinyUI(navbarPage("ST558 Final Project",
                           # GLM model
                           h4("Variable selection for GLM:"),
                           # Checkboxes in sidebar
-                          checkboxGroupInput("predictors1", label = "Select predictor variables:", choices = names(glmMath), selected = names(glmMath)),
+                          selectInput("predictors1", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
                           
                           # Classification tree model
                           h4("Variable selection for classification tree:"),
                           # Checkboxes in sidebar
-                          checkboxGroupInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = names(math)),
+                          selectInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
                           
                           # Random forest model
                           h4("Variable selection for random forest:"),
                           # Checkboxes in sidebar
-                          checkboxGroupInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = names(math)),
+                          selectInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
                           
                           # Run all models at the same time
                           h4("Click the button when ready to run all three models"),
