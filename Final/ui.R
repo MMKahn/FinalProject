@@ -57,7 +57,10 @@ shinyUI(navbarPage("ST558 Final Project",
              ),
              column(12,
                     h4("About the App"),
-                    p("The goal of this project is to create a nice looking shiny app that can be used to explore data and model it")
+                    p("The purpose of the following analysis is to conduct exploratory analysis and create predictive models for this math student data set to find which one performs the best."),
+                    p("After splitting the data into a training and test set, the performance of a gerneralized linear regression model (GLM), a classification tree model, and a random forest model will be compared based on the root-mean-square error (RMSE) calculation."),
+                    p("The best model will have the smallest RMSE from the test set."),
+                    p("This process can be customized by the user of the app.")
              )
            )
   ),
@@ -104,11 +107,11 @@ shinyUI(navbarPage("ST558 Final Project",
                conditionalPanel(condition = "input.ct",
                                 selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"), selected = 'ow'),
                                 conditionalPanel(condition = "input.typeCT == 'ow'",
-                                                 selectInput("oneWay", label = "Select a variable:", choices = names(math), selected = "school")
+                                                 selectInput("oneWay", label = "Select a variable:", choices = c("school", "sex", "age", "address"), selected = "school")
                                 ),
                                 conditionalPanel(condition = "input.typeCT == 'tw'",
-                                                 selectInput("twoWayXvar", "First Variable:", choices = names(math), selected = "age"),
-                                                 selectInput("twoWayYvar", "Second Variable:", choices = names(math), selected = "absences")
+                                                 selectInput("twoWayXvar", "First Variable:", choices = c("school", "sex"), selected = "sex"),
+                                                 selectInput("twoWayYvar", "Second Variable:", choices = c("age", "address"), selected = "address")
                                 )
                ),
              ),
@@ -116,9 +119,11 @@ shinyUI(navbarPage("ST558 Final Project",
              # Customize Main panel
              mainPanel(
                #dataPlot is name of "plot" object in server
+               h4("Graphs of Data"),
                plotOutput("dataPlot"),
-               #dataTable is name of "data" object in server
+               h4("Numerical Summaries of Data"),
                dataTableOutput("summary"),
+               h4("Frequency of Data"),
                dataTableOutput("continTable"),
              )
            )

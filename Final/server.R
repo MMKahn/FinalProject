@@ -48,30 +48,8 @@ shinyServer(function(input, output, session){
     }
   })
   
-  #Numeric Summaries
-  cntgTbl <- reactive({
-    ct <- input$ct
-    typeCT <- input$typeCT
-    oneWay <- input$oneWay
-    twoWayXvar <- input$twoWayXvar
-    twoWayYvar <- input$twoWayYvar
-    if (typeCT == 'ow'){
-      one <- data.frame(table(get(oneWay)))
-      colnames(one) <- c(get(oneWay), "count")
-      one
-    }
-    else {
-      two <- data.frame(table(get(twoWayXvar), get(twoWayYvar)))
-      colnames(two) <- c(get(twoWayXvar), get(twoWayYvar), "count")
-      two
-    }
-  })
-  
-  output$continTable<-renderDataTable({
-    cntgTbl()
-  })
-
-  # Numerical summaries working
+  # Numerical summaries
+  # Stats
   numSum <- reactive({
     numVar <- input$numVar
     groupby <- input$groupby
@@ -128,10 +106,56 @@ shinyServer(function(input, output, session){
     }
   })
   
-  
   output$summary <- renderDataTable({
     numSum()
   })
+  
+  # Numeric Summaries
+  # Contingincy tables
+  cntgTbl <- reactive({
+    ct <- input$ct
+    typeCT <- input$typeCT
+    oneWay <- input$oneWay
+    twoWayXvar <- input$twoWayXvar
+    twoWayYvar <- input$twoWayYvar
+    if (typeCT == 'ow'){
+      if (oneWay == 'school'){
+        data.frame(table(math$school))
+      }
+      else if (oneWay == 'sex'){
+        data.frame(table(math$sex))
+      }
+      else if (oneWay == 'age'){
+        data.frame(table(math$age))
+      }
+      else {
+        data.frame(table(math$address))
+      }
+    }
+    else {
+      if (twoWayXvar == 'school'){
+        if (twoWayYvar == 'age'){
+          data.frame(table(math$school, math$age))
+        }
+        else {
+          data.frame(table(math$school, math$address))
+        }
+      }
+      else {
+        if (twoWayYvar == 'age'){
+          data.frame(table(math$sex, math$age))
+        }
+        else {
+          data.frame(table(math$sex, math$address))
+        }
+      }
+    }
+  })
+  
+  output$continTable<-renderDataTable({
+    cntgTbl()
+  })
+  
   
   # Create text when splitting data into training and test sets
   output$mathTrain<-renderText({
