@@ -5,6 +5,7 @@ library(caret)
 library(shiny)
 library(DT)
 library(ggplot2)
+library(corrplot)
 
 # Read in and manipulate data
 math <- read_csv("student-mat.csv")
@@ -110,9 +111,8 @@ shinyServer(function(input, output, session){
   })
   
   # Numeric Summaries
-  # Contingincy tables
+  # Contingency tables
   cntgTbl <- reactive({
-    ct <- input$ct
     typeCT <- input$typeCT
     oneWay <- input$oneWay
     twoWayXvar <- input$twoWayXvar
@@ -182,11 +182,12 @@ shinyServer(function(input, output, session){
   # Training
   glm <- reactive({
     predictors1 <- input$predictors1
+    cv1 <- input$cv1
     genLinear <- train(math$G3 ~ get(predictors1), 
                        data = mathTrn,
                        method = "glmStepAIC",
                        preProcess = c("center", "scale"),
-                       trControl = trainControl(method = "cv", number = 10),
+                       trControl = trainControl(method = "cv", number = get(cv1)),
                        family = "binomial",
                        direction = "backward")
     genLinear
@@ -209,11 +210,12 @@ shinyServer(function(input, output, session){
   # Training
   classTreeModel <- reactive({
     predictors2 <- input$predictors2
+    cv2 <- input$cv2
     classTree <- train(math$G3 ~ get(predictors2), 
                        data = mathTrn,
                        method = "rpart",
                        preProcess = c("center", "scale"),
-                       trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3))
+                       trControl = trainControl(method = "cv", number = get(cv2)))
     classTree
   }) 
   # Output
@@ -225,12 +227,12 @@ shinyServer(function(input, output, session){
   # Training
   rf <- reactive({
     predictors3 <- input$predictors3
+    cv3 <- input$cv3
     randForest <- train(math$G3 ~ get(predictors3), 
                         data = mathTrn,
                         method = "rf",
                         preProcess = c("center", "scale"),
-                        trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
-                        tuneGrid = data.frame(mtry = 1:5))
+                        trControl = trainControl(method = "cv", number = get(cv3)))
     randForest
   })
   # Output

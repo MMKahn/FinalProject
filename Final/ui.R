@@ -17,7 +17,9 @@ shinyUI(navbarPage("ST558 Final Project",
                     ),
              column(12,
                     h4("About the Data"),
-                    p("The data used in this project includes student information for those attending math courses in secondary education at two Portuguese schools, Gabriel Pereira and Mousinho da Silveira. The data was collected by using school reports and questionnaires. Attributes for this data frame are defined as:"),
+                    p("The data used in this project includes student information for those attending math courses in secondary education at two Portuguese schools, 
+                      Gabriel Pereira and Mousinho da Silveira. The data was collected by using school reports and questionnaires. Attributes for this data frame 
+                      are defined as:"),
                     tags$ul(
                       tags$li(strong("school:"), "student's school ('GP' - Gabriel Pereira or 'MS' - Mousinho da Silveira)"),
                       tags$li(strong("sex:"), "student's sex ('F' - female or 'M' - male)"),
@@ -57,10 +59,11 @@ shinyUI(navbarPage("ST558 Final Project",
              ),
              column(12,
                     h4("About the App"),
-                    p("The purpose of the following analysis is to conduct exploratory analysis and create predictive models for this math student data set to find which one performs the best."),
-                    p("After splitting the data into a training and test set, the performance of a generalized linear regression model (GLM), a classification tree model, and a random forest model will be compared based on the root-mean-square error (RMSE) calculation."),
-                    p("The best model will have the smallest RMSE from the test set."),
-                    p("This process can be customized by the user of the app.")
+                    p("The purpose of the following analysis is to conduct exploratory analysis and create predictive models for this 
+                      math student data set to find which one performs the best. After splitting the data into a training and test set, 
+                      the performance of a generalized linear regression model (GLM), a classification tree model, and a random forest model 
+                      will be compared based on the root-mean-square error (RMSE) calculation. The best model will have the smallest RMSE 
+                      from the test set. This process can be customized by the user of the app.")
              )
            )
   ),
@@ -81,15 +84,15 @@ shinyUI(navbarPage("ST558 Final Project",
                radioButtons("plotType", label = "Select the Plot Type", choices = c("Bar Graph" = "barGraph", "Boxplot" = "boxPlot", "Scatter Plot" = "scatterPlot"), selected = "barGraph"),
                # Select options based on radio button selection
                conditionalPanel(condition = "input.plotType == 'barGraph'",
-                                selectInput("barXvar", "Variable on X-axis:", choices = names(charVars), selected = "school")
+                                selectInput("barXvar", label = "Variable on X-axis:", choices = names(charVars), selected = "school")
                ),
                conditionalPanel(condition = "input.plotType == 'boxPlot'",
-                                selectInput("boxXvar", "Variable on X-axis:", choices = names(charVars), selected = "school"),
-                                selectInput("boxYvar", "Variable on Y-axis:", choices = names(numericVars), selected = "age")
+                                selectInput("boxXvar", label = "Variable on X-axis:", choices = names(charVars), selected = "school"),
+                                selectInput("boxYvar", label = "Variable on Y-axis:", choices = names(numericVars), selected = "age")
                ),
                conditionalPanel(condition = "input.plotType == 'scatterPlot'",
-                                selectInput("scatterXvar", "Variable on X-axis:", choices = names(numericVars), selected = "age"),
-                                selectInput("scatterYvar", "Variable on Y-axis:", choices = names(numericVars), selected = "absences")
+                                selectInput("scatterXvar", label = "Variable on X-axis:", choices = names(numericVars), selected = "age"),
+                                selectInput("scatterYvar", label = "Variable on Y-axis:", choices = names(numericVars), selected = "absences")
                ),
                
                br(),
@@ -102,17 +105,14 @@ shinyUI(navbarPage("ST558 Final Project",
                conditionalPanel(condition = "input.groupby",
                                 selectInput("groupVar", label = "Select a variable(s) to group by:", choices = c("school" = "school", "sex" = "sex", "both school and sex" = "both"), selected = "school")
                ),
-               p("Would you like to create a contingency table?"),
-               checkboxInput("ct", label = "Yes", value = FALSE),
-               conditionalPanel(condition = "input.ct",
-                                selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"), selected = 'ow'),
-                                conditionalPanel(condition = "input.typeCT == 'ow'",
-                                                 selectInput("oneWay", label = "Select a variable:", choices = c("school", "sex", "age", "address"), selected = "school")
-                                ),
-                                conditionalPanel(condition = "input.typeCT == 'tw'",
-                                                 selectInput("twoWayXvar", "First Variable:", choices = c("school", "sex"), selected = "sex"),
-                                                 selectInput("twoWayYvar", "Second Variable:", choices = c("age", "address"), selected = "address")
-                                )
+               h4("Select options to create contingency tables:"),
+               selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"), selected = 'ow'),
+               conditionalPanel(condition = "input.typeCT == 'ow'",
+                                selectInput("oneWay", label = "Select a variable:", choices = c("school", "sex", "age", "address"), selected = "school"),
+               ),
+               conditionalPanel(condition = "input.typeCT == 'tw'",
+                                selectInput("twoWayXvar", "First Variable:", choices = c("school", "sex"), selected = "sex"),
+                                selectInput("twoWayYvar", "Second Variable:", choices = c("age", "address"), selected = "address"),
                ),
              ),
              
@@ -138,49 +138,66 @@ shinyUI(navbarPage("ST558 Final Project",
              tabPanel("Modeling Info",
                       fluidRow(
                         column(12, 
-                               h3("This section uses three different approaches to conduct model fitting on our data set."),
-                               h4("You will select options for running these models on the following page entitled", strong("Model Fitting"), "."),
-                               h5("Note that the response variable,", strong("higher"), " - indicating if a math student plans to take higher education - is fixed and cannot be changed by the user."),
-                               p("This is done due to the binomial nature of the GLM model used in this project.")
+                               h3("This section uses three different approaches to conduct model fitting on our math student information data set."),
                         ),
                         column(4, 
                                h4("Generalized Linear Regression Model"),
-                               p("Since all variables in this data set are constrained, we can use a GLM to fit our training set because the range of the response variable is guaranteed to be fixed."),
-                               p("For this model, a binary response variable is required, which is why the higher education variable has been selected"),
+                               p("Since all variables in this data set are constrained, we can use a GLM to fit our training set 
+                                 because the range of the response variable is guaranteed to be fixed. For this model, a binary 
+                                 response variable is required, which is why the", code("higher"), "education variable has been selected"),
                                br(),
                                p("The specific GLM model used for this app is a logistic regression model known as backward stepwise regression."),
-                               p("When it comes to traditional variable selection techniques with statistical stopping rules, backward selection is preferred over forward, especially when dealing with collinearity, because it starts with the assumedly unbaised global model."),
-                               p("The problem with stepwise selection is that it produces narrow confidence limits and does not play nice in the presence of redundant predictors."),
-                               br()
-                               p("To train this model, the method argument was specified as 'glmStepAIC', family as 'binomial', direction to 'backward' and metric to 'Accuracy'. The data was pre-processed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do 10 fold cross-validation using the 'cv' method.")
+                               p("When it comes to traditional variable selection techniques with statistical stopping rules, backward selection is 
+                                 preferred over forward, especially when dealing with collinearity, because it starts with the assumedly unbaised global model."),
+                               p("The problem with stepwise selection is that it produces narrow confidence limits and does not play nice in the 
+                                 presence of redundant predictors."),
+                               br(),
+                               p("To train this model, the", code("method"), "argument was specified as", code("'glmStepAIC'"), "," , code("family"), "as", 
+                                 code("binomial"), ", and", code("direction"), "to", code("'backward'"), ". The data was preprocessed by centering and scaling. 
+                                 Lastly,", code("trainControl()"), "was used within the", code("trControl"), "argument to do cross validation using the", code("'cv'"), "method.")
                         ),
                         column(4, 
                                h4("Classification Tree Model"),
-                               p("Classification trees split your predictor spaces into regions in order to develop different predictions based off of those regions.  They typically use the most prevalent class as the prediction."),
-                               p("They differ from regression trees by predicting a group membership, as opposed to predicting the value of some continuous variable."),
-                               p("Instead of using the residual sum of squares for splits, classification trees try to minimize the Gini index or entropy/deviance across the splits:"),
+                               p("Classification trees split predictor spaces into regions in order to develop different predictions based off of those regions.
+                                 They typically use the most prevalent class as the prediction. They differ from regression trees by predicting a group membership, 
+                                 as opposed to predicting the value of some continuous variable. Instead of using the residual sum of squares for splits, 
+                                 classification trees try to minimize the Gini index or entropy/deviance across the splits:"),
                                uiOutput('gini'),
                                uiOutput('deviance'),
-                               p("Classification trees
-                                 are nice as they are easy to understand and interpret, there is no need to scale predictors or include interaction terms, and the algorithm itself essentially conducts variable selection."),
-                               p("Unfortunately, they also tend to have high variance and there's no proven optimal algorithm designed for fitting these trees as they’re greedy and do not look steps ahead."),
-                               p("Trees also require the extra step of pruning as not to overfit to the training data. While this decreases the variance,it increases the bias a little bit, but hopefully gains overall prediction strength."),
+                               p("Classification trees are beneficial as they are easy to understand and interpret, there is no need to scale predictors or include 
+                                 interaction terms, and the algorithm itself essentially conducts variable selection."),
+                               p("Unfortunately, they also tend to have high variance and there's no proven optimal algorithm designed for fitting these trees as 
+                                 they’re greedy and do not look steps ahead. Trees also require the extra step of pruning as not to overfit to the training data. 
+                                 While this decreases the variance,it increases the bias a little bit, but hopefully gains overall prediction strength."),
                                p("Prediction improvements may be made by using our next model, random forest."),
                                br(),
-                               p("To train this model,  the method argument was specified as 'rpart'. The data was preprocessed by centering and scaling. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
+                               p("To train this model, the", code("method"), "argument was specified as", code("'rpart'"), ". The data was preprocessed by
+                                 centering and scaling. Lastly,", code("trainControl()"), "was used within the", code("trControl"), "argument to do cross
+                                 validation using the", code("'cv'"), "method.")
                         ),
                         column(4, 
                                h4("Random Forest Model"),
                                p("Generally speaking, random forests models predictions usually outperform regression models and tree models."),
-                               p("They are an extension of bagging, but instead of including every predictor in each one of our trees, we're only going to include a random subset of predictors."),
-                               p("This means that instead of calculating a statistic, we're going to get a bootstrap sample with random predictors to fit one tree; another bootstrap sample with random predictors to fit another tree; and do that repeatedly."),
-                               p("After the trees are created from the bootstrap samples, we disaggregate the trees, and take the average."),
-                               p("Using an average from a plethora of models tends to predict better than a single model does. "),
-                               p("By averaging the predictions, random forests decrease the variance our prediction, however they do lose interpretability."),
-                               p("Random forest models also take a lot of processing power and computation time, slowing down results."),
+                               p("They are an extension of bagging, but instead of including every predictor in each one of our trees, we're only going to 
+                                 include a random subset of predictors. This means that instead of calculating a statistic, we're going to get a bootstrap 
+                                 sample with random predictors to fit one tree; another bootstrap sample with random predictors to fit another tree; and do 
+                                 that repeatedly. After the trees are created from the bootstrap samples, we disaggregate the trees, and take the average."),
                                br(),
-                               p("To train this model,  the method argument was specified as 'rf'. The data was preprocessed by centering and scaling. The argument tuneGrid was then used to replicate the random forest model a total of five (5) times. Lastly, trainControl() was used within the trControl argument to do repeated 5 fold cross-validation 3 times using the 'repeatedcv' method.")
-                        )
+                               p("Using an average from a plethora of models tends to predict better than a single model does."),
+                               p("By averaging the predictions, random forests decrease the variance our prediction, however they do lose interpretability. 
+                                 Random forest models also take a lot of processing power and computation time, slowing down results."),
+                               br(),
+                               p("To train this model, the", code("method"), "argument was specified as", code("'rf'"), ". The data was preprocessed by
+                                 centering and scaling. Lastly,", code("trainControl()"), "was used within the", code("trControl"), "argument to do cross
+                                 validation using the", code("'cv'"), "method.")
+                        ),
+                        column(12,
+                               h4("You will select options for running these models on the following page entitled", strong("Model Fitting"), "."),
+                               h5("User defined selections include predictor variables and the number of folds for cross validation in the", code("trainControl"), 
+                                  "step."),
+                               h5("Note that the response variable,", code("higher"), " - indicating if a math student plans to take higher education - is fixed 
+                                  and cannot be changed by the user."),
+                               p("This is done due to the binomial nature of the GLM model used in this project."))
                       )
              ),
              tabPanel("Model Fitting",
@@ -191,7 +208,7 @@ shinyUI(navbarPage("ST558 Final Project",
                           # Split to data into train and test
                           h4("Splitting into training and test sets:"),
                           # Numeric input widget in sidebar
-                          numericInput("train", label="Select a number 0-1 to indicate the proportion of total observations you'd like in the training set:", value = .7, min = 0, max = 1, step = .1),
+                          numericInput("train", label="Select a number 0-1 indicating the proportion of total observations placed in the training set:", value = .7, min = 0, max = 1, step = .1),
                           # mathTrain and mathTest are names of "text" objects in server
                           textOutput("mathTrain"),
                           textOutput("mathTest"),
@@ -200,24 +217,27 @@ shinyUI(navbarPage("ST558 Final Project",
                           br(),
                           
                           # GLM model
-                          h4("Variable selection for GLM:"),
+                          h4("Options for GLM:"),
                           # Checkboxes in sidebar
                           selectInput("predictors1", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
+                          numericInput("cv1", "Select the number of folds used in cross validation", value = 5, min = 2, max = 10, step = 1),
                           
                           # Classification tree model
-                          h4("Variable selection for classification tree:"),
+                          h4("Options for classification tree:"),
                           # Checkboxes in sidebar
                           selectInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
+                          numericInput("cv2", "Select the number of folds used in cross validation", value = 5, min = 2, max = 10, step = 1),
                           
                           # Random forest model
-                          h4("Variable selection for random forest:"),
+                          h4("Options for random forest:"),
                           # Checkboxes in sidebar
                           selectInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = c("school", "address", "famsize", "Pstatus", "schoolsup", "famsup"), multiple = TRUE),
+                          numericInput("cv3", "Select the number of folds used in cross validation", value = 5, min = 2, max = 10, step = 1),
                           
                           # Run all models at the same time
                           h4("Click the button when ready to run all three models"),
-                          # Action button to fit models
-                          actionButton("button", "Fit Models")
+                          # Click button to fit models
+                          # submitButton("button", "Fit Models")
                         ),
                         
                         #Customize Main panel
