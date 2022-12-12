@@ -180,21 +180,21 @@ shinyServer(function(input, output, session){
   
   # GLM Model fitting
   # Training
-  glm <- reactive({
+  glm1 <- reactive({
     predictors1 <- input$predictors1
     cv1 <- input$cv1
-    genLinear <- train(math$G3 ~ get(predictors1), 
+    backward <- train(math$higher ~ get(predictors1), 
                        data = mathTrn,
                        method = "glmStepAIC",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "cv", number = get(cv1)),
                        family = "binomial",
                        direction = "backward")
-    genLinear
+    backward
   })
   # Output
   output$glmModel <- renderPrint({
-    glm()
+    glm1()
   })
   
   # Math  type in classification tree explanation
@@ -208,10 +208,10 @@ shinyServer(function(input, output, session){
   
   # Classification Tree Model fitting
   # Training
-  classTreeModel <- reactive({
+  classTreeModel1 <- reactive({
     predictors2 <- input$predictors2
     cv2 <- input$cv2
-    classTree <- train(math$G3 ~ get(predictors2), 
+    classTree <- train(math$higher ~ get(predictors2), 
                        data = mathTrn,
                        method = "rpart",
                        preProcess = c("center", "scale"),
@@ -220,15 +220,15 @@ shinyServer(function(input, output, session){
   }) 
   # Output
   output$ctModel <- renderPrint({
-    classTreeModel()
+    classTreeModel1()
   })
   
   # Random Forest Model fitting
   # Training
-  rf <- reactive({
+  rf1 <- reactive({
     predictors3 <- input$predictors3
     cv3 <- input$cv3
-    randForest <- train(math$G3 ~ get(predictors3), 
+    randForest <- train(math$higher ~ get(predictors3), 
                         data = mathTrn,
                         method = "rf",
                         preProcess = c("center", "scale"),
@@ -237,8 +237,68 @@ shinyServer(function(input, output, session){
   })
   # Output
   output$rfModel <- renderPrint({
-    rf()
+    rf1()
   })
+  
+  # GLM Model on test set
+  glmRMSE <- reactive({
+    glmPredict <- predict(glm1(), newdata = mathTst)
+    glmPostResample <- postResample(glmPredict, mathTst$higher)
+    RMSE <- glmPostResample[1]
+    RMSE
+  })
+  
+  output$glmTest <- renderPrint({
+    glmRMSE()
+  })
+  
+  # Classification tree model on test set
+  ctRMSE <- reactive({
+    ctPredict <- predict(classTreeModel1(), newdata = mathTst)
+    ctPostResample <- postResample(ctPredict, mathTst$higher)
+    RMSE <- ctPostResample[1]
+    RMSE
+  })
+  
+  output$ctTest <- renderPrint({
+    ctRMSE()
+  })
+    
+  # Random forest model on test set
+  rfRMSE <- reactive({
+    rfPredict <- predict(rf1(), newdata = mathTst)
+    rfPostResample <- postResample(rfPredict, mathTst$higher)
+    RMSE <- rfPostResample[1]
+    RMSE
+  })
+  
+  output$rfTest <- renderPrint({
+    rfRMSE()
+  })
+  
+  # RMSE results
+  bestRMSE <- reactive({
+    vec <- c(glmRMSE(), ctRMSE(), rfRMSE())
+    minRMSE <- min(vec)
+    minRMSE
+  })
+  
+  # Best RMSE text
+  output$bestModel <- renderUI({
+    if (glmRMSE() == minRMSE()){
+      text <- paste("The best model is GLM (Backward Stepwise) with a test RMSE value of", round(minRMSE(), 2), ".")
+      h2(text)
+    }
+    else if (ctRMSE() == minRMSE()){
+      text <- paste("The best model is Classification Tree with a test RMSE value of", round(minRMSE(), 2), ".")
+      h2(text)
+    }
+    else {
+      text <- paste("The best model is Random Forests with a test RMSE value of", round(minRMSE(), 2), ".")
+      h2(text)
+    }
+  })
+
   
   # Subsetting data
   subsetVars <- reactive({

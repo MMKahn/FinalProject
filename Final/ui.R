@@ -105,6 +105,7 @@ shinyUI(navbarPage("ST558 Final Project",
                conditionalPanel(condition = "input.groupby",
                                 selectInput("groupVar", label = "Select a variable(s) to group by:", choices = c("school" = "school", "sex" = "sex", "both school and sex" = "both"), selected = "school")
                ),
+               br(),
                h4("Select options to create contingency tables:"),
                selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"), selected = 'ow'),
                conditionalPanel(condition = "input.typeCT == 'ow'",
@@ -242,9 +243,21 @@ shinyUI(navbarPage("ST558 Final Project",
                         
                         #Customize Main panel
                         mainPanel(
+                          h3("Look for", strong("RMSE"), "(root-mean-square error) in model fit statistics"),
+                          h3("The best model will have the", em("smallest"), "RMSE from the both data sets, test set being most significant."),
+                          h4("GLM Training", style = "color:blue;"),
                           verbatimTextOutput("glmModel"),
+                          h4("Classification Tree Training", style = "color:blue;"),
                           verbatimTextOutput("ctModel"),
-                          verbatimTextOutput("rfModel")
+                          h4("Random Forests Training", style = "color:blue;"),
+                          verbatimTextOutput("rfModel"),
+                          h4("GLM Test", style = "color:blue;"),
+                          verbatimTextOutput("glmTest"),
+                          h4("Classification Tree Test", style = "color:blue;"),
+                          verbatimTextOutput("ctTest"),
+                          h4("Random Forests Test", style = "color:blue;"),
+                          verbatimTextOutput("rfTest"),
+                          uiOutput("bestModel")
                         )
                       )
              ),
