@@ -97,7 +97,18 @@ shinyUI(navbarPage("ST558 Final Project",
                conditionalPanel(condition = "input.groupby",
                                 selectInput("groupVar", label = "Select a variable(s) to group by:", choices = c("school" = "school", "sex" = "sex", "both school and sex" = "both"), selected = "school")
                ),
-               
+               p("Would you like to create a contingency table?"),
+               checkboxInput("ct", label = "Yes", value = FALSE),
+               conditionalPanel(condition = "input.ct",
+                                selectInput("typeCT", label = "Type of Contingency Table:", choices = c("One-Way" = "ow", "Two-Way" = "tw"))
+               ),
+               conditionalPanel(condition = "input.typeCT == 'ow'",
+                                selectInput("oneWay", label = "Select a variable:", choices = names(math), selected = "school")
+               ),
+               conditionalPanel(condition = "input.typeCT == 'tw'",
+                                selectInput("twoWayXvar", "First Variable:", choices = names(math), selected = "age"),
+                                selectInput("twoWayYvar", "Second Variable:", choices = names(math), selected = "absences")
+               ),
              ),
              
              # Customize Main panel
@@ -106,6 +117,7 @@ shinyUI(navbarPage("ST558 Final Project",
                plotOutput("dataPlot"),
                #dataTable is name of "data" object in server
                dataTableOutput("summary"),
+               dataTableOutput("continTable"),
              )
            )
   ),

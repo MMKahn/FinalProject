@@ -49,29 +49,22 @@ shinyServer(function(input, output, session){
   })
   
   #Numeric Summaries
-  output$dataTable<-renderDataTable({
-    numericType <- input$numericType
-    avg <- input$avg
-    stdev <- input$stdev
-    cntgTbl <- input$cntgTbl
+  cntgTbl <- reactive({
+    ct <- input$ct
+    typeCT <- input$typeCT
     oneWay <- input$oneWay
     twoWayXvar <- input$twoWayXvar
     twoWayYvar <- input$twoWayYvar
-    if (numericType == 'ct') {
-      if (cntgTbl == 'ow'){
-        data.frame(table(oneWay))
-      }
-      else {
-        data.frame(table(twoWayXvar, twoWayYvar))
-      }
-    }
-    
-    else if (numericType == 'mean') {
-      data.frame(mean(avg))
+    if (typeCT == 'ow'){
+      data.frame(table(get(oneWay)))
     }
     else {
-      data.frame(sd(stdev))
+      data.frame(table(get(twoWayXvar), get(twoWayYvar)))
     }
+  })
+  
+  output$continTable<-renderDataTable({
+    cntgTbl()
   })
 
   # Numerical summaries working
