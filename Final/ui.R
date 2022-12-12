@@ -210,22 +210,16 @@ shinyUI(navbarPage("ST558 Final Project",
                           
                           # GLM model
                           h4("Variable selection for GLM:"),
-                          # Select input widget in sidebar
-                          selectInput("target1", label = "Select target variable:", choices = names(glmMath), multiple = FALSE, selected = "higher"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors1", label = "Select predictor variables:", choices = names(glmMath), selected = names(glmMath)),
                           
                           # Classification tree model
                           h4("Variable selection for classification tree:"),
-                          # Select input widget in sidebar
-                          selectInput("target2", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors2", label = "Select predictor variables:", choices = names(math), selected = names(math)),
                           
                           # Random forest model
                           h4("Variable selection for random forest:"),
-                          # Select input widget in sidebar
-                          selectInput("target3", label = "Select target variable:", choices = names(math), multiple = FALSE, selected = "G3"),
                           # Checkboxes in sidebar
                           checkboxGroupInput("predictors3", label = "Select predictor variables:", choices = names(math), selected = names(math)),
                           

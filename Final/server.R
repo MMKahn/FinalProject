@@ -111,17 +111,20 @@ shinyServer(function(input, output, session){
   })
   
   # GLM Model fitting
+  # Splitting data
+  glmDataSplit <- reactive({
+    train <- input$train
+    set.seed(100)
+    mathIndex <- createDataPartition(glmMath$higher, p = train, list = FALSE)
+    mathTrn <- glmMath[mathIndex, ]
+    mathTst <- glmMath[-mathIndex, ]
+    list(mathTrn, mathTst)
+  })
   # Training
   glm <- reactive({
-    target1 <- input$target1
-    train <- input$train
     predictors1 <- input$predictors1
-    set.seed(100)
-    mathIndex <- createDataPartition(get(target1), p = train, list = FALSE)
-    mathTrn <- math[mathIndex, ]
-    mathTst <- math[-mathIndex, ]
-    genLinear <- train(get(target1) ~ get(predictors1), 
-                       data = mathTrn,
+    genLinear <- train(glmMath$higher ~ get(predictors1), 
+                       data = glmDataSplit()$mathTrn,
                        method = "glmStepAIC",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "cv", number = 10),
@@ -143,18 +146,22 @@ shinyServer(function(input, output, session){
     withMathJax(helpText('$$Deviance:−2plog(p)−2(1−p)log(1−p)$$'))
   })
   
+  # Classification tree and random forests data split
+  dataSplit <- reactive({
+    train <- input$train
+    set.seed(100)
+    mathIndex <- createDataPartition(math$G3, p = train, list = FALSE)
+    mathTrn <- glmMath[mathIndex, ]
+    mathTst <- glmMath[-mathIndex, ]
+    list(mathTrn, mathTst)
+  })
+  
   # Classification Tree Model fitting
   # Training
   classTreeModel <- reactive({
-    target2 <- input$target2
-    train <- input$train
     predictors2 <- input$predictors2
-    set.seed(100)
-    mathIndex <- createDataPartition(get(target2), p = train, list = FALSE)
-    mathTrn <- math[mathIndex, ]
-    mathTst <- math[-mathIndex, ]
-    classTree <- train(get(target2) ~ get(predictors2), 
-                       data = mathTrn,
+    classTree <- train(math$G3 ~ get(predictors2), 
+                       data = dataSplit()$mathTrn,
                        method = "rpart",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3))
@@ -168,15 +175,9 @@ shinyServer(function(input, output, session){
   # Random Forest Model fitting
   # Training
   rf <- reactive({
-    target3 <- input$target3
-    train <- input$train
     predictors3 <- input$predictors3
-    set.seed(100)
-    mathIndex <- createDataPartition(get(target3), p = train, list = FALSE)
-    mathTrn <- math[mathIndex, ]
-    mathTst <- math[-mathIndex, ]
-    randForest <- train(get(target3) ~ get(predictors3), 
-                        data = mathTrn,
+    randForest <- train(math$G3 ~ get(predictors3), 
+                        data = dataSplit()$mathTrn,
                         method = "rf",
                         preProcess = c("center", "scale"),
                         trControl = trainControl(method = "repeatedcv", number = 5, repeats = 3),
