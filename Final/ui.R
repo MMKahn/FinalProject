@@ -60,10 +60,35 @@ shinyUI(navbarPage("ST558 Final Project",
              column(12,
                     h4("About the App"),
                     p("The purpose of the following analysis is to conduct exploratory analysis and create predictive models for this 
-                      math student data set to find which one performs the best. After splitting the data into a training and test set, 
-                      the performance of a generalized linear regression model (GLM), a classification tree model, and a random forest model 
-                      will be compared based on the root-mean-square error (RMSE) calculation. The best model will have the smallest RMSE 
-                      from the test set. This process can be customized by the user of the app.")
+                      math student data set to find which one performs the best. The three models included in this R shiny app include a
+                      generalized linear regression model (specifically a backward stepwise model), a classification tree model, and a 
+                      random forests model. The best model will have the smallest RMSE from the test set. This process can be customized 
+                      by the user of the app. Doing these analysis through an R shiny app allows for an interactive user experience to
+                      modeling and prediction as the user is able to choose aspects of both the EDA and modeling.")
+             ),
+             column(4,
+                    p(strong("In the EDA tab, the user will be able to customize:")),
+                    tags$ul(
+                      tags$li("graphical summaries of the data"),
+                      tags$li("variables for center and spread statistics"),
+                      tags$li("contingency tables to show variable value frequency")
+                    )
+             ),
+             column(4,
+                    p(strong("In the Modeling tab, the user will be able to customize:")),
+                    tags$ul(
+                      tags$li("the proportion of observations placed into the training and test sets"),
+                      tags$li("predictor variables for all three models"),
+                      tags$li("the number of folds for cross validation"),
+                      tags$li("input predictor values to see a predicted response")
+                      )
+             ),
+             column(4,
+                    p(strong("In the Data tab, the user will be able to customize:")),
+                    tags$ul(
+                      tags$li("a subset of the data"),
+                      tags$li("save the data set as a .csv file")
+                      )
              )
            )
   ),
