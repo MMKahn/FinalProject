@@ -167,7 +167,7 @@ shinyServer(function(input, output, session){
   # Data split
   set.seed(100)
   mathIndex  <- reactive({
-    createDataPartition(math$G3, p = input$train, list = FALSE)
+    createDataPartition(math$higher, p = input$train, list = FALSE)
   })
   # Training set
   mathTrn <- reactive({
@@ -183,8 +183,9 @@ shinyServer(function(input, output, session){
   glm1 <- reactive({
     predictors1 <- input$predictors1
     cv1 <- input$cv1
-    backward <- train(math$higher ~ get(predictors1), 
-                       data = mathTrn,
+    glmTraining <- mathTrn[ , predictors1]
+    backward <- train(math$higher ~ ., 
+                       data = glmTraining,
                        method = "glmStepAIC",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "cv", number = get(cv1)),
@@ -212,7 +213,7 @@ shinyServer(function(input, output, session){
     predictors2 <- input$predictors2
     cv2 <- input$cv2
     classTree <- train(math$higher ~ get(predictors2), 
-                       data = mathTrn,
+                       data = data.frame(mathTrn),
                        method = "rpart",
                        preProcess = c("center", "scale"),
                        trControl = trainControl(method = "cv", number = get(cv2)))
@@ -229,7 +230,7 @@ shinyServer(function(input, output, session){
     predictors3 <- input$predictors3
     cv3 <- input$cv3
     randForest <- train(math$higher ~ get(predictors3), 
-                        data = mathTrn,
+                        data = data.frame(mathTrn),
                         method = "rf",
                         preProcess = c("center", "scale"),
                         trControl = trainControl(method = "cv", number = get(cv3)))
@@ -298,7 +299,8 @@ shinyServer(function(input, output, session){
       h2(text)
     }
   })
-
+  
+  # Prediction
   
   # Subsetting data
   subsetVars <- reactive({
