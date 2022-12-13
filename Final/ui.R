@@ -225,7 +225,9 @@ shinyUI(navbarPage("ST558 Final Project",
                                p("This is done due to the binomial nature of the GLM model used in this project."))
                       )
              ),
-             # For the life of me, I cannot get any other these models to run. I've tried to fix them for 2 days now and have not figured out where my issue is. Fixing one problem only starts another.
+             # For the life of me, I cannot get any other these models to run. 
+             # I've tried to fix them for 2 days now and have not figured out where my issue is. Fixing one problem only starts another.
+             # I apologize for not being able to debug this in time for submission.
              tabPanel("Model Fitting",
                       # Create Sidebar
                       sidebarLayout(
