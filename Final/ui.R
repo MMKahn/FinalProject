@@ -144,7 +144,6 @@ shinyUI(navbarPage("ST558 Final Project",
              
              # Customize Main panel
              mainPanel(
-               #dataPlot is name of "plot" object in server
                h4("Graphs of Data", style = "color:blue;"),
                plotOutput("dataPlot"),
                h4("Numerical Summaries of Data", style = "color:blue;"),
@@ -267,7 +266,7 @@ shinyUI(navbarPage("ST558 Final Project",
                           # submitButton("button", "Fit Models")
                         ),
                         
-                        #Customize Main panel
+                        # Customize Main panel
                         mainPanel(
                           h3("Look for", strong("RMSE"), "(root-mean-square error) in model fit statistics"),
                           h3("The best model will have the", em("smallest"), "RMSE from the both data sets, test set being most significant."),
@@ -288,6 +287,8 @@ shinyUI(navbarPage("ST558 Final Project",
                       )
              ),
              tabPanel("Prediction",
+                      # Explanation of section
+                      h3("In this section, you can choose a model and values of explanatory variables to get a prediction of the response."),
                       # Create Sidebar
                       sidebarLayout(
                         # Customize Sidebar
@@ -309,7 +310,7 @@ shinyUI(navbarPage("ST558 Final Project",
                           numericInput("studyPred", label = "Select study time:", value = 2, min = 1, max = 4)
                         ),
                         
-                        #Customize Main panel
+                        # Customize Main panel
                         mainPanel(
                           h4("Prediction results based on predictor values"),
                           verbatimTextOutput("predValues")
