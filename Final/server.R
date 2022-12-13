@@ -301,6 +301,19 @@ shinyServer(function(input, output, session){
   })
   
   # Prediction
+  output$predValues <- renderPrint({
+    predModel <- input$prediction
+    predValueData <- data.frame(input$schoolPred, input$sexPred, input$agePred, input$addressPred, input$famsizePred, input$PstatusPred, input$MeduPred, input$FeduPred, input$travelPred, input$studyPred)
+    if (predModel == "glm"){
+      predict(glm1(), newdata = predValueData)
+    }
+    else if (predModel == "ct"){
+      predict(classTreeModel1(), newdata = predValueData)
+    }
+    else {
+      predict(rf1(), newdata = predValueData)
+    }
+  })
   
   # Subsetting data
   subsetVars <- reactive({
