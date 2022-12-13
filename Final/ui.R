@@ -226,6 +226,7 @@ shinyUI(navbarPage("ST558 Final Project",
                                p("This is done due to the binomial nature of the GLM model used in this project."))
                       )
              ),
+             # For the life of me, I cannot get any other these models to run. I've tried to fix them for 2 days now and have not figured out where my issue is. Fixing one problem only starts another.
              tabPanel("Model Fitting",
                       # Create Sidebar
                       sidebarLayout(
@@ -287,6 +288,58 @@ shinyUI(navbarPage("ST558 Final Project",
                       )
              ),
              tabPanel("Prediction",
+                      # Create Sidebar
+                      sidebarLayout(
+                        # Customize Sidebar
+                        sidebarPanel(
+                          #Select model for prediction
+                          radioButtons("prediction", label = "Select model:", choices = c("GLM" = "glm", "Classification Tree" = "ct", "Random Forest" = "rf"), selected = "glm"),
+                          br(),
+                          
+                          # Select predictors
+                          selectInput("predVars", "Select predictor variables:", choices = c("school", "sex", "age", "address", "famsize", "Pstatus", "Medu", "Fedu", "traveltime", "studytime"), selected = c("school", "age", "address", "famsize", "traveltime", "studytime"), multiple = TRUE),
+                          # Values for predictors
+                          conditionalPanel(condition = "input.predVars == 'school'",
+                                           selectInput("schoolPred", label = "Select school:", choices = c("Gabriel Pereira" = "gp", "Mousinho da Silveira" = "mds"), selected = "gp")
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'sex'",
+                                           selectInput("sexPred", label = "Select gender:", choices = c("Female" = "F", "Male" = "M"), selected = "F")
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'age'",
+                                           numericInput("agePred", label = "Select age:", value = 16, min = 15, max = 22)
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'address'",
+                                           selectInput("addressPred", label = "Select address:", choices = c("Urban" = "U", "Rural" = "R"), selected = "U")
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'famsize'",
+                                           selectInput("famsizePred", label = "Select family size:", choices = c("Less than or equal to 3" = "LE3", "Greater than 3" = "GT3"), selected = "LE3")
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'Pstatus'",
+                                           selectInput("PstatusPred", label = "Select parental status:", choices = c("Together" = "T", "Apart" = "A"), selected = "T")
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'Medu'",
+                                           numericInput("MeduPred", label = "Select mother's education:", value = 2, min = 1, max = 4)
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'Fedu'",
+                                           numericInput("FeduPred", label = "Select father's education:", value = 2, min = 1, max = 4)
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'traveltime'",
+                                           numericInput("travelPred", label = "Select travel time:", value = 2, min = 1, max = 4)
+                          ),
+                          conditionalPanel(condition = "input.predVars == 'studytime'",
+                                           numericInput("studyPred", label = "Select study time:", value = 2, min = 1, max = 4)
+                          ),
+                          
+                          
+                        ),
+                        
+                        #Customize Main panel
+                        mainPanel(
+                          h4("Prediction results based on predictor values")
+                          
+                        )
+                      )
+                        
              )
            )
   ),
