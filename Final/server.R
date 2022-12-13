@@ -13,6 +13,8 @@ math <- read_csv("student-mat.csv")
 numericVars <- math %>% 
   select_if(is.numeric)
 # Character variables
+# When I ran my app in a new project with an emprty environment, I am getting an error saying this object does not exist?
+# But when I run my app here I have no issue and the app runs fine.
 charVars <- math %>%
   select_if(is.character)
 
