@@ -27,5 +27,5 @@ install.packages(c("readr", "caret", "shiny", "DT", "tidyverse", "dplyr", "ggplo
 You can open and use the application by copying the following code and pasting it into your personal RStudio.
 
 ``` r
-shiny::runGitHub("MMKahn/FinalProject", ref = "main", subdir = "Final")
+shiny::runGitHub("FinalProject", "MMKahn", subdir = "/Final/")
 ```
